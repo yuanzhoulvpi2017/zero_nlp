@@ -19,7 +19,7 @@ pip install -r requirements.txt
 1. 数据其实就是一系列文件夹📁，然后每一个文件夹里面有大量的文件，每一个文件都是`.csv`格式的文件。其中有一列数据是`content`
 2. 每一行的`content`就代表一句话,截图如下
 <img src="https://github.com/yuanzhoulvpi2017/zero_nlp/raw/main/images/chinesegpt2_data.png"/>
-3. 虽然数据有15GB那么大，但是处理起来一点也不复杂，使用`datasets`包，可以很轻松的处理大数据，而我只需要传递所有的文件路径即可，这个使用`glob`包就能完成。
+3. 虽然数据有15GB那么大，但是处理起来一点也不复杂，使用 `datasets` 包，可以很轻松的处理大数据，而我只需要传递所有的文件路径即可，这个使用 `glob` 包就能完成。
 
 # 代码
 ## ⚙️训练代码`train_chinese_gpt2.ipynb`
