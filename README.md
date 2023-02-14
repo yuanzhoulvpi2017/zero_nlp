@@ -17,6 +17,7 @@
 | 中文名称   | 文件夹名称                                                                                           | 数据  | 数据清洗 | 大模型 | 模型部署 | 图解  |
 |--------|-------------------------------------------------------------------------------------------------|-----|------|-----|------|-----|
 | 中文文本分类 | [chinese_classifier](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_classifier) | ✅   | ✅    | ✅   | ☑️   | ✅   |
+| 中文gpt2 | [chinese_gpt2](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_gpt2)             | ✅   | ✅    | ✅   | ✅    | ☑️  |
 
 ## 数据流程图解
 
@@ -26,4 +27,6 @@
 
 <img src="https://github.com/yuanzhoulvpi2017/zero_nlp/raw/main/images/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB.003.png"/>
 
+### 中文gpt2
+<img src="https://github.com/yuanzhoulvpi2017/zero_nlp/raw/main/images/chinesegpt2_bot.png"/>
 

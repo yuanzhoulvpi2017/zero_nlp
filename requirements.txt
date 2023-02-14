@@ -4,3 +4,4 @@ datasets
 transformers
 evaluate
 sentencepiece
+gradio
