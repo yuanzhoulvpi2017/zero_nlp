@@ -4,6 +4,7 @@
 2. 可以使用你自己的数据训练，用来：写新闻、写古诗、写对联等
 3. 我这里也训练了一个中文gpt2模型，使用了`612万`个样本，每个样本有512个tokens，总共相当于大约`31亿个tokens`
 
+
 ## ⚠️安装包
 
 需要准备好环境，也就是安装需要的包
@@ -40,6 +41,12 @@ pip install -r requirements.txt
    ，然后再添加一下`bos_token`、`eos_token`、`pad_token`。
 3. `gpt2_model`使用的是[gpt2](https://huggingface.co/gpt2)，这里的gpt2我是从0开始训练的。而不是使用别人的预训练的`gpt2`模型。
 4. `Trainer`训练器使用的就是`transformers`的`Trainer`模块。（支撑多卡并行，tensorboard等，都写好的，直接调用就行了，非常好用）
+
+## 😊模型
+模型已经上传到`huggingface`上了 [https://huggingface.co/yuanzhoulvpi/gpt2_chinese](https://huggingface.co/yuanzhoulvpi/gpt2_chinese)
+   <img src="https://github.com/yuanzhoulvpi2017/zero_nlp/raw/main/images/gpt2_chinese_info.jpeg"/>
+
+
 
 ## 📤推理代码`infer.ipynb`
 
