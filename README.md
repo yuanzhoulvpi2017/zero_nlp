@@ -17,11 +17,13 @@
 [//]: # (### 源码解读)
 
 [//]: # ()
+
 [//]: # (当前`transformers`包，确实好用，包括训练等，但是我们不能停留于表面，不能浅尝辄止。要深入源码底部，挖掘出每一个细节。因此，在这个模块中，我将把)
 
 [//]: # (`transfrmers`包中用到的python高级用法、优秀的数据处理思路和方法，尽可能的讲解清楚。)
 
 [//]: # ()
+
 [//]: # (⚠️将逐步完善，敬请期待)
 
 [//]: # (| 模块         | 文件名称 | 作用  | 实现细节 |)
@@ -40,14 +42,13 @@
 
 [//]: # (| AutoConfig | ☑️   | ☑️  | ☑️   |)
 
-
-
 ### 模型训练
 
-| 中文名称   | 文件夹名称                                                                                                         | 数据  | 数据清洗 | 大模型 | 模型部署 | 图解  |
-|--------|---------------------------------------------------------------------------------------------------------------|-----|------|-----|------|-----|
-| 中文文本分类 | [chinese_classifier](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_classifier)               | ✅   | ✅    | ✅   | ☑️   | ✅   |
-| 中文gpt2 | [chinese_gpt2](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_gpt2)                           | ✅   | ✅    | ✅   | ✅    | ☑️  |
+| 中文名称   | 文件夹名称                                                                                           | 数据  | 数据清洗 | 大模型 | 模型部署 | 图解  |
+|--------|-------------------------------------------------------------------------------------------------|-----|------|-----|------|-----|
+| 中文文本分类 | [chinese_classifier](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_classifier) | ✅   | ✅    | ✅   | ☑️   | ✅   |
+| 中文gpt2 | [chinese_gpt2](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_gpt2)             | ✅   | ✅    | ✅   | ✅    | ☑️  |
+| 中文clip | [chinese_clip](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip)             | ✅   | ✅    | ✅   | ☑️   | ☑️  |
 
 [//]: # (| 文本相似度  | [sentence_similarity]&#40;https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/sentence_similarity&#41;             | ☑️  | ☑️   | ☑️  | ☑️   | ☑️  |)
 
