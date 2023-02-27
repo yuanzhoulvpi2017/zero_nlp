@@ -133,7 +133,7 @@ A： 也很简单啦，加个`linear`对齐一下就行了。
 2. 针对loss不下降，下次如果再让我做，我打算先把`clip`模型的`vit`部分先固定住，然后训练bert来拟合`vit-output`。
 3. 也可也固定bert模型，训练vit模型；
 4. 也可以拆开做，反正本质上都是`Encoder`，然后计算相似度。
-5. 如果那位同学有机器，有数据，有需求的话，可以联系我邮箱📪[yuanzhoulvpi@outlook.com](yuanzhoulvpi@outlook.com) 或者微信：🛰️[yuanzhoulvpi_god](yuanzhoulvpi_god)
+5. 如果那位同学有机器，有数据，有需求的话，可以联系我邮箱：📪[yuanzhoulvpi@outlook.com](yuanzhoulvpi@outlook.com) 微信：🛰️[yuanzhoulvpi_god](yuanzhoulvpi_god)
 
 
 
