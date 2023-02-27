@@ -53,7 +53,61 @@ CLIP的训练数据是`文本-图像对`：一张图像和它对应的文本描�
 
 4. 其实完整下来看，数据清洗，就是把符合格式的照片筛选出来，然后进行训练。
 
+### 数据总结
 
+说到底，你的数据只要整理成这样的一个样式即可
+
+| text                          | image_path                        |
+|-------------------------------|-----------------------------------|
+| 河南一村民继承祖上的一金碗,专家鉴定:此碗是溥仪皇帝用过的 | bigdata/image_data/test-9282.jpg  |
+| 著名钢琴家郎朗:我永远不会放弃演奏             | bigdata/image_data/test-2644.jpg  |
+| 科幻动作电影《超体》10月24日来袭            | bigdata/image_data/test-13199.jpg |
+
+1. `text`：这一列对应图片的标注，或者和图片相关的文本。
+2. `image_path`：这一列对应图片所在你电脑本地上的路径。
+3. 是的，搞了半天，数据就是这么简单。
+
+## 数据预处理
+
+这里的数据预处理，是我随便起的名字。说白了，就是这么会是：
+
+1. 使用`tokenizer`把`text`转换成`input_ids`和`attention_mask`.
+2. 使用`processor`把`image`转换成`pixel_values`.
+
+### ⚠️注意事项
+
+1. 处理`text`，那还是很快的。百万级别的数据，可能2～3分钟就行了。
+2. 因为`image`太大了，只能在训练的时候，每一batch，才能去加载`image`
+   ，这就导致训练的时候特别慢。倒不是因为我的3090算力不行，全都`TMD`卡在计算机IO上了，非常让人难受。
+
+## 模型部分
+
+终于讲解到clip的模型部分了。这个clip模型实在是太灵活了，你可以做很多个版本，这里我们挑几个比较常见的结构，来分享一下。
+
+### 常见的clip模型
+
+这里值得是常见的clip模型，特指的是`transformers`包的clip模型。
+
+1. clip主要就是分为两个部分，一个是`CLIPTextTransformer`,一个是`CLIPVisionTransformer`，说白了就是一个处理text，一个处理image。
+2. `CLIPTextTransformer`和`CLIPVisionTransformer`的核心，都共用了一个模型结构`CLIPEncoder`
+   。也就是CLIP编码部分。（这里说的共用，值得是模型框架相同，而不是模型训练的时候，参数也相同。） 
+
+
+Q：有些人就问了，text和image两个生成的数据都不一样，比如`text`转换成`input_ids`和`attention_mask`；`image`
+   转换成`pixel_values`；他们怎么可以使用一个模型结构`CLIPEncoder`？
+
+A：这个也是非常好回答的，因他俩又不是直接使用`CLIPEncoder`
+   ，前后都加了一些万金油的模型组件（比如`embedding`、`linear`
+   等），模型输出的时候，也是这么做的。还是应了那句话，就看你怎么吧数据转换成`hidden_states`，以及怎么把`hidden_states`输出出去。
+
+Q：`CLIPTextTransformer`和`CLIPVisionTransformer`输出的维度也不一定一样吧，怎么计算交叉损失？
+
+A： 也很简单啦，加个`linear`对齐一下就行了。
+
+
+这里给一下截图，看看`CLIPTextTransformer`和`CLIPVisionTransformer`的内心：
+   ![model](images/clip003.png)
+   ![model](images/clip002.png)
 
 
 
