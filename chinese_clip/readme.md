@@ -90,24 +90,56 @@ CLIP的训练数据是`文本-图像对`：一张图像和它对应的文本描�
 
 1. clip主要就是分为两个部分，一个是`CLIPTextTransformer`,一个是`CLIPVisionTransformer`，说白了就是一个处理text，一个处理image。
 2. `CLIPTextTransformer`和`CLIPVisionTransformer`的核心，都共用了一个模型结构`CLIPEncoder`
-   。也就是CLIP编码部分。（这里说的共用，值得是模型框架相同，而不是模型训练的时候，参数也相同。） 
-
+   。也就是CLIP编码部分。（这里说的共用，值得是模型框架相同，而不是模型训练的时候，参数也相同。）
 
 Q：有些人就问了，text和image两个生成的数据都不一样，比如`text`转换成`input_ids`和`attention_mask`；`image`
-   转换成`pixel_values`；他们怎么可以使用一个模型结构`CLIPEncoder`？
+转换成`pixel_values`；他们怎么可以使用一个模型结构`CLIPEncoder`？
 
 A：这个也是非常好回答的，因他俩又不是直接使用`CLIPEncoder`
-   ，前后都加了一些万金油的模型组件（比如`embedding`、`linear`
-   等），模型输出的时候，也是这么做的。还是应了那句话，就看你怎么吧数据转换成`hidden_states`，以及怎么把`hidden_states`输出出去。
+，前后都加了一些万金油的模型组件（比如`embedding`、`linear`
+等），模型输出的时候，也是这么做的。还是应了那句话，就看你怎么吧数据转换成`hidden_states`，以及怎么把`hidden_states`输出出去。
 
 Q：`CLIPTextTransformer`和`CLIPVisionTransformer`输出的维度也不一定一样吧，怎么计算交叉损失？
 
 A： 也很简单啦，加个`linear`对齐一下就行了。
 
+#### 这里给一下截图，看看`CLIPTextTransformer`和`CLIPVisionTransformer`的内心：
 
-这里给一下截图，看看`CLIPTextTransformer`和`CLIPVisionTransformer`的内心：
-   ![model](images/clip003.png)
-   ![model](images/clip002.png)
+![model](images/clip003.png)
+![model](images/clip002.png)
+
+### 中文版本的clip模型
+
+上面的`常见的clip模型`，确实是好，其实你只要换一个支持中文的新`tokenizer`，然后从0️⃣开始训练即可。
+但是这么搞，没什么创意呀。其实我第一次就是这么干的，直接支持中文的新`tokenizer`。但是训练了一天，loss基本上没变化。我内心其实是崩溃的。
+
+
+后来，我研究了一下`transformers`包里面的`chinese-clip`模型代码。我发现，`chinese-clip`相对于`clip`
+。就是把常规的`CLIPTextTransformer`换成了`bert`版本的。啊对，这就破案了。这个奉上代码截图。
+![model](images/clip004.png)
+
+我以为这个换成这个模型也就可以了。但是训练了1天，loss依然没有变化。
+
+
+## 总结
+这次训练clip其实还是非常失败的。
+1. 尝试了很多方法，但是模型的loss就是不下降，非常难受。
+2. 因为io问题，耽误训练进度，难受。
+3. 因为图片做的筛选不到位，返工几次，耽误我接近7～8小时，非常难受。
+
+## 后续改进
+
+1. 因为训练image这类型的任务，非常吃资源，不管是我的显存还是我的磁盘。目前数据占用我硬盘`100GB`
+2. 针对loss不下降，下次如果再让我做，我打算先把`clip`模型的`vit`部分先固定住，然后训练bert来拟合`vit-output`。
+3. 也可也固定bert模型，训练vit模型；
+4. 也可以拆开做，反正本质上都是`Encoder`，然后计算相似度。
+5. 如果那位同学有机器，有数据，有需求的话，可以联系我邮箱📪[yuanzhoulvpi@outlook.com](yuanzhoulvpi@outlook.com) 或者微信：🛰️[yuanzhoulvpi_god](yuanzhoulvpi_god)
+
+
+
+
+
+
 
 
 
