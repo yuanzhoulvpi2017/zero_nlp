@@ -66,3 +66,6 @@
 
 <img src="https://github.com/yuanzhoulvpi2017/zero_nlp/raw/main/images/chinesegpt2_bot.png"/>
 
+### 中文clip
+
+![model](images/clip001.png)
