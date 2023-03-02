@@ -44,15 +44,15 @@
 
 ### 模型训练
 
-| 中文名称   | 文件夹名称                                                                                           | 数据  | 数据清洗 | 大模型 | 模型部署 | 图解  |
-|--------|-------------------------------------------------------------------------------------------------|-----|------|-----|------|-----|
-| 中文文本分类 | [chinese_classifier](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_classifier) | ✅   | ✅    | ✅   | ☑️   | ✅   |
-| 中文gpt2 | [chinese_gpt2](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_gpt2)             | ✅   | ✅    | ✅   | ✅    | ☑️  |
-| 中文clip | [chinese_clip](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip)             | ✅   | ✅    | ✅   | ☑️   | ☑️  |
+| 中文名称     | 文件夹名称                                                                                           | 数据  | 数据清洗 | 大模型 | 模型部署 | 图解  |
+|----------|-------------------------------------------------------------------------------------------------|-----|------|-----|------|-----|
+| 中文文本分类   | [chinese_classifier](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_classifier) | ✅   | ✅    | ✅   | ☑️   | ✅   |
+| 中文gpt2   | [chinese_gpt2](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_gpt2)             | ✅   | ✅    | ✅   | ✅    | ☑️  |
+| 中文clip   | [chinese_clip](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip)             | ✅   | ✅    | ✅   | ☑️   | ☑️  |
+| 图像生成中文文本 | [VisionEncoderDecoderModel](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit-gpt2-image-chinese-captioning) | ✅   | ✅    | ✅   | ☑️   | ✅ |
 
 [//]: # (| 文本相似度  | [sentence_similarity]&#40;https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/sentence_similarity&#41;             | ☑️  | ☑️   | ☑️  | ☑️   | ☑️  |)
 
-[//]: # (| 图像到文本  | [VisionEncoderDecoderModel]&#40;https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/VisionEncoderDecoderModel&#41; | ☑️  | ☑️   | ☑️  | ☑️   | ☑️  |)
 
 ## 数据流程图解
 
@@ -69,3 +69,6 @@
 ### 中文clip
 
 ![model](images/clip001.png)
+
+### 图像生成中文文本
+![model](images/vision-encoder-decoder.png)
