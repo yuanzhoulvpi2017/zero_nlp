@@ -76,4 +76,4 @@
 
 ### vit 源码
 
-![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/transformers/model_doc/vit_architecture.jpg)
+![](images/vit_architecture.jpg)

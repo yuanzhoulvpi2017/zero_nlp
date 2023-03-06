@@ -6,7 +6,7 @@
 
 vit想法非常牛，但是数据处理的思想更牛，之前都没提出来过。
 
-![](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/transformers/model_doc/vit_architecture.jpg)
+![](images/vit_architecture.jpg)
 
 载对于一个图片，将一个图片分割成N块。巧妙的使用`nn.Conv2d`。
 
