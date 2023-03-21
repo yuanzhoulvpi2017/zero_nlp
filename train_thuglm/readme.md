@@ -60,14 +60,14 @@ if labels is not None:
 
 # 训练`thuglm-6b`模型
 
-| 序号  | 介绍                     | 文件夹                    | 是否已完成 | 是否还有bug |
-|-----|------------------------|------------------------|-------|---------|
-| 1   | 使用lora算法对`thuglm-6b`微调 | `v1_train_thuglm-lora` | ☑️    | ✅       |
-| 2   | 单卡直接对`thuglm-6b`微调     | `v2_train_thuglm`      | ☑️    | ✅       |
-| 3   | 多卡对`thuglm-6b`微调       | `v3_train_thuglm`      | ☑️    | ✅       |
+| 序号  | 介绍                                       | 文件夹                    | 是否已完成 | 是否还有bug |
+|-----|------------------------------------------|------------------------|-------|---------|
+| 1   | 使用lora算法对`thuglm-6b`微调                   | `v1_train_thuglm-lora` | ☑️    | ✅       |
+| 2   | 使用`transformers`的`Trainer`对`thuglm-6b`微调 | `v2_train_thuglm`      | ☑️    | ✅       |
 
 ## 1. 使用lora微调`thuglm-6b`模型 文件夹为`v1_train_thuglm-lora`
 
+<details><summary><b>序号1</b></summary>
 1.目前，训练一个`thuglm-6b`模型，还是比较费劲的（我还没试过，目前都在传使用lora方法来进行训练）。那也就跟风写一个教程。
 
 2. 文本，将介绍如何使用`peft`[https://github.com/huggingface/peft](https://github.com/huggingface/peft)
@@ -76,6 +76,7 @@ if labels is not None:
 4. 包括数据整理、模型转换、训练加载等详细步骤。
 
 ### 数据部分
+
 在前面也说到，`thuglm-6b`的`ChatGLMForConditionalGeneration`loss和`gpt2`的`GPT2LMHeadModel`loss是差不多的，都是自回归模型，就是名字不一样而已。
 
 因此，可以看看我的`chinese-gpt2`模型训练的数据要求。
@@ -93,6 +94,7 @@ if labels is not None:
    <img src="https://github.com/yuanzhoulvpi2017/zero_nlp/raw/main/images/chinesegpt2_data.png"/>
 3. 虽然数据有15GB那么大，但是处理起来一点也不复杂，使用 `datasets`
    包，可以很轻松的处理大数据，而我只需要传递所有的文件路径即可，这个使用 `glob` 包就能完成。
+
 </details>
 
 
@@ -104,24 +106,29 @@ import pandas as pd
 import os
 
 data_dir = "data"
-os.makedirs(name=data_dir,exist_ok=True)
+os.makedirs(name=data_dir, exist_ok=True)
 
 for i in range(20):
-    data = pd.DataFrame({'sentence':['ChatGLM-6B 是一个开源的、支持中英双语的对话语言模型，基于 [General Language Model (GLM)](https://github.com/THUDM/GLM) 架构，具有 62 亿参数。结合模型量化技术，'] * 100})
+    data = pd.DataFrame({'sentence': [
+                                         'ChatGLM-6B 是一个开源的、支持中英双语的对话语言模型，基于 [General Language Model (GLM)](https://github.com/THUDM/GLM) 架构，具有 62 亿参数。结合模型量化技术，'] * 100})
     data.to_csv(f"{data_dir}/{i}.csv", index=False)
 ```
 
 #### 数据注意事项
+
 1. 只要注意，你的数据里面是有一列是文本，这个文本不需要任何标签。比如一列为`sentence`，或者叫`content`。这就可以了。
 2. 我们数据加载使用的是`huggingface`的`datasets`包，虽然我们这里使用的是`csv`文件，但是，实际上，你使用`json`格式的数据，都是可以的。
-3. 训练大模型，需要的数据肯定也是非常大，担心自己不能处理几百G的数据么？其实不用担心，你只要传递所有的数据的路径即可。剩下的，就可以靠`datasets`来帮你解决。他会自动对数据做处理，并且对数据所在的位置做内存映射，处理大数据简直是轻飘飘。
-
+3.
+训练大模型，需要的数据肯定也是非常大，担心自己不能处理几百G的数据么？其实不用担心，你只要传递所有的数据的路径即可。剩下的，就可以靠`datasets`
+来帮你解决。他会自动对数据做处理，并且对数据所在的位置做内存映射，处理大数据简直是轻飘飘。
 
 这里展示一下加载数据的细节
+
 ```python
 from glob import glob
 from datasets import load_dataset
-all_data_list = glob("v1_train_thuglm_lora/data/*")[:10] # 如果数据大，把这个列表变长一点就行了。
+
+all_data_list = glob("v1_train_thuglm_lora/data/*")[:10]  # 如果数据大，把这个列表变长一点就行了。
 
 dataset = load_dataset(
     "csv",
@@ -133,11 +140,13 @@ dataset = load_dataset(
 ```
 
 ### 模型训练
+
 1. `lora`这个算法，已经在`peft`包中实现了。
 2. 我看很多人为了使用他，包装了很多代码，实在是看不下去了。这里给一个简单的版本。
-3. 这个版本，是模仿`peft`包里面的`examples`的`peft_lora_seq2seq_accelerate_fsdp.py`文件写的。因此，在处理tokenizer的部分，可能不太对，但是基本上训练流程已经跑通了。
-4. 虽然也是跑通了，但是具体细节上，我还是对`thuglm`模型做了修改，主要是为了解决`RuntimeError: expected scalar type Half but found Float`问题。
-
+3. 这个版本，是模仿`peft`包里面的`examples`的`peft_lora_seq2seq_accelerate_fsdp.py`
+   文件写的。因此，在处理tokenizer的部分，可能不太对，但是基本上训练流程已经跑通了。
+4. 虽然也是跑通了，但是具体细节上，我还是对`thuglm`
+   模型做了修改，主要是为了解决`RuntimeError: expected scalar type Half but found Float`问题。
 
 有些人可能会问，`lora`也没对`thuglm`这类型的模型做支持啊，你这么用，难道不会有问题么？
 
@@ -145,6 +154,7 @@ dataset = load_dataset(
 <details><summary><b>基本上是不会有问题的</b></summary>
 
 1. 查看`lora.py`源码,在`target_modules`里面，有列举了`['q', 'v']`。
+
 ```python
 # src/peft/tuners/lora.py
 @dataclass
@@ -171,10 +181,11 @@ class LoraConfig(PeftConfig):
         default=None,
         metadata={
             "help": "List of module names or regex expression of the module names to replace with Lora."
-            "For example, ['q', 'v'] or '.*decoder.*(SelfAttention|EncDecAttention).*(q|v)$' "
+                    "For example, ['q', 'v'] or '.*decoder.*(SelfAttention|EncDecAttention).*(q|v)$' "
         },
     )
 ```
+
 2. 查看`transformers`的`T5`模型源码,他里面的`['q', 'v']`对应的是`nn.Linear`层。
 
 ```python
@@ -191,17 +202,17 @@ class T5Attention(nn.Module):
     #     self.n_heads = config.num_heads
     #     self.dropout = config.dropout_rate
     #     self.inner_dim = self.n_heads * self.key_value_proj_dim
-        
-        
-        self.q = nn.Linear(self.d_model, self.inner_dim, bias=False)
-        self.k = nn.Linear(self.d_model, self.inner_dim, bias=False)
-        self.v = nn.Linear(self.d_model, self.inner_dim, bias=False)
-        self.o = nn.Linear(self.inner_dim, self.d_model, bias=False)
+
+    self.q = nn.Linear(self.d_model, self.inner_dim, bias=False)
+    self.k = nn.Linear(self.d_model, self.inner_dim, bias=False)
+    self.v = nn.Linear(self.d_model, self.inner_dim, bias=False)
+    self.o = nn.Linear(self.inner_dim, self.d_model, bias=False)
 ```
 
 3. 因此，找到`thuglm`模型中，有关`nn.Linear`层的名称，就可以了。
 
 4. 使用`lora`对`thuglm`模型做修改
+
 ```python
 from peft import LoraConfig, TaskType, get_peft_model
 from peft.utils.other import fsdp_auto_wrap_policy
@@ -225,14 +236,28 @@ peft_config = LoraConfig(
 )
 model = get_peft_model(model, peft_config)
 ```
+
 </details>
 
 
 关键的部分，都已经被列举出来了，剩下的部分，基本上就是和训练`pytorch`模型差不多了，就不再介绍了。
 
+</details>
 
 
+## 2. 使用`transformers`的`Trainer`对`thuglm-6b`微调
+<details><summary><b>序号2</b></summary>
+
+主要做的事情有：
+1. 修改了`modeling_chatglm.py`模型源码，可以使用`Tranformers`包的`trainer`来进行训练。
+2. 自定义数据。
 
 
+缺点
+1. 需要手动的从huggingface上下载模型依赖的文件到`thu-chatglm-6b`文件夹中，但是要保留我放的`modeling_chatglm.py`文件。
+2. 显存消耗大。3090的24G都顶不住。
+
+
+</details>
 
 
