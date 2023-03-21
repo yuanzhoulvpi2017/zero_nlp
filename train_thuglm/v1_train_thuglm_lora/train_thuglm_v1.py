@@ -1,21 +1,17 @@
 # %%
-from thuglm.modeling_chatglm import ChatGLMModel, ChatGLMConfig, ChatGLMForConditionalGeneration
-from thuglm.tokenization_chatglm import ChatGLMTokenizer
+from train_thuglm.v1_train_thuglm_lora.thuglm.modeling_chatglm import ChatGLMForConditionalGeneration
+from train_thuglm.v1_train_thuglm_lora.thuglm.tokenization_chatglm import ChatGLMTokenizer
 
 import torch
 from accelerate import Accelerator
 from datasets import load_dataset
 from torch.utils.data import DataLoader
-from tqdm import tqdm
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, default_data_collator, get_linear_schedule_with_warmup
+from transformers import default_data_collator, get_linear_schedule_with_warmup
 
 from peft import LoraConfig, TaskType, get_peft_model
 from peft.utils.other import fsdp_auto_wrap_policy
 from tqdm import tqdm
 from glob import glob
-from torch import nn
-
-
 
 # %%
 model = ChatGLMForConditionalGeneration.from_pretrained(
@@ -47,7 +43,7 @@ model = get_peft_model(model, peft_config)
 accelerator.print(model.print_trainable_parameters())
 
 # %%
-all_data_list = glob("data/*")[:10]
+all_data_list = glob("v1_train_thuglm_lora/data/*")[:10]
 
 dataset = load_dataset(
     "csv",
