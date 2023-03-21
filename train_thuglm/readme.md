@@ -66,13 +66,78 @@ if labels is not None:
 | 2   | 单卡直接对`thuglm-6b`微调     | `v2_train_thuglm`      | ☑️    | ✅       |
 | 3   | 多卡对`thuglm-6b`微调       | `v3_train_thuglm`      | ☑️    | ✅       |
 
-# 1. 使用lora微调`thuglm-6b`模型
+## 1. 使用lora微调`thuglm-6b`模型 文件夹为`v1_train_thuglm-lora`
 
 1.目前，训练一个`thuglm-6b`模型，还是比较费劲的（我还没试过，目前都在传使用lora方法来进行训练）。那也就跟风写一个教程。
 
 2. 文本，将介绍如何使用`peft`[https://github.com/huggingface/peft](https://github.com/huggingface/peft)
    包（这个包实现了`lora`算法）、对`thuglm-6b`进行微调。
 3. 硬件设备是3090（显存为24G）。
-   4包括数据整理、模型转换、训练加载等详细步骤。
+4. 包括数据整理、模型转换、训练加载等详细步骤。
+
+### 数据部分
+在前面也说到，`thuglm-6b`的`ChatGLMForConditionalGeneration`loss和`gpt2`的`GPT2LMHeadModel`loss是差不多的，都是自回归模型，就是名字不一样而已。
+
+因此，可以看看我的`chinese-gpt2`模型训练的数据要求。
+
+<details><summary><b>chinese-gpt2模型数据</b></summary>
+
+#### 数据来源
+
+1. 获得数据:数据链接，关注公众号【`统计学人`】，然后回复【`gpt2`】即可获得。
+
+#### 数据格式
+
+1. 数据其实就是一系列文件夹📁，然后每一个文件夹里面有大量的文件，每一个文件都是`.csv`格式的文件。其中有一列数据是`content`
+2. 每一行的`content`就代表一句话,截图如下
+   <img src="https://github.com/yuanzhoulvpi2017/zero_nlp/raw/main/images/chinesegpt2_data.png"/>
+3. 虽然数据有15GB那么大，但是处理起来一点也不复杂，使用 `datasets`
+   包，可以很轻松的处理大数据，而我只需要传递所有的文件路径即可，这个使用 `glob` 包就能完成。
+</details>
+
+
+当然，也可以直接生成一个数据，可以这么写
+
+```python
+import numpy as np
+import pandas as pd
+import os
+
+data_dir = "data"
+os.makedirs(name=data_dir,exist_ok=True)
+
+for i in range(20):
+    data = pd.DataFrame({'sentence':['ChatGLM-6B 是一个开源的、支持中英双语的对话语言模型，基于 [General Language Model (GLM)](https://github.com/THUDM/GLM) 架构，具有 62 亿参数。结合模型量化技术，'] * 100})
+    data.to_csv(f"{data_dir}/{i}.csv", index=False)
+```
+
+### 数据注意事项
+1. 只要注意，你的数据里面是有一列是文本，这个文本不需要任何标签。比如一列为`sentence`，或者叫`content`。这就可以了。
+2. 我们数据加载使用的是`huggingface`的`datasets`包，虽然我们这里使用的是`csv`文件，但是，实际上，你使用`json`格式的数据，都是可以的。
+3. 训练大模型，需要的数据肯定也是非常大，担心自己不能处理几百G的数据么？其实不用担心，你只要传递所有的数据的路径即可。剩下的，就可以靠`datasets`来帮你解决。他会自动对数据做处理，并且对数据所在的位置做内存映射，处理大数据简直是轻飘飘。
+
+
+这里展示一下加载数据的细节
+```python
+from glob import glob
+from datasets import load_dataset
+all_data_list = glob("v1_train_thuglm_lora/data/*")[:10]
+
+dataset = load_dataset(
+    "csv",
+    data_files={
+        "train": all_data_list[:6],
+        "validation": all_data_list[6:],
+    },
+)
+```
+
+
+
+
+
+
+
+
 
 
