@@ -111,7 +111,7 @@ for i in range(20):
     data.to_csv(f"{data_dir}/{i}.csv", index=False)
 ```
 
-### 数据注意事项
+#### 数据注意事项
 1. 只要注意，你的数据里面是有一列是文本，这个文本不需要任何标签。比如一列为`sentence`，或者叫`content`。这就可以了。
 2. 我们数据加载使用的是`huggingface`的`datasets`包，虽然我们这里使用的是`csv`文件，但是，实际上，你使用`json`格式的数据，都是可以的。
 3. 训练大模型，需要的数据肯定也是非常大，担心自己不能处理几百G的数据么？其实不用担心，你只要传递所有的数据的路径即可。剩下的，就可以靠`datasets`来帮你解决。他会自动对数据做处理，并且对数据所在的位置做内存映射，处理大数据简直是轻飘飘。
@@ -121,7 +121,7 @@ for i in range(20):
 ```python
 from glob import glob
 from datasets import load_dataset
-all_data_list = glob("v1_train_thuglm_lora/data/*")[:10]
+all_data_list = glob("v1_train_thuglm_lora/data/*")[:10] # 如果数据大，把这个列表变长一点就行了。
 
 dataset = load_dataset(
     "csv",
@@ -132,8 +132,103 @@ dataset = load_dataset(
 )
 ```
 
+### 模型训练
+1. `lora`这个算法，已经在`peft`包中实现了。
+2. 我看很多人为了使用他，包装了很多代码，实在是看不下去了。这里给一个简单的版本。
+3. 这个版本，是模仿`peft`包里面的`examples`的`peft_lora_seq2seq_accelerate_fsdp.py`文件写的。因此，在处理tokenizer的部分，可能不太对，但是基本上训练流程已经跑通了。
+4. 虽然也是跑通了，但是具体细节上，我还是对`thuglm`模型做了修改，主要是为了解决`RuntimeError: expected scalar type Half but found Float`问题。
 
 
+有些人可能会问，`lora`也没对`thuglm`这类型的模型做支持啊，你这么用，难道不会有问题么？
+
+
+<details><summary><b>基本上是不会有问题的</b></summary>
+
+1. 查看`lora.py`源码,在`target_modules`里面，有列举了`['q', 'v']`。
+```python
+# src/peft/tuners/lora.py
+@dataclass
+class LoraConfig(PeftConfig):
+    """
+    This is the configuration class to store the configuration of a [`~peft.Lora`].
+
+    Args:
+        r (`int`): Lora attention dimension
+        target_modules (`Union[List[str],str]`): The names of the modules to apply Lora to.
+        lora_alpha (`float`): The alpha parameter for Lora scaling.
+        lora_dropout (`float`): The dropout probability for Lora layers.
+        merge_weights (`bool`):
+            Whether to merge the weights of the Lora layers with the base transformer model in `eval` mode.
+        fan_in_fan_out (`bool`): Set this to True if the layer to replace stores weight like (fan_in, fan_out)
+        enable_lora ( `List[bool]`): Used with `lora.MergedLinear`.
+        bias (`str`): Bias type for Lora. Can be 'none', 'all' or 'lora_only'
+        modules_to_save (`List[str]`):List of modules apart from LoRA layers to be set as trainable
+            and saved in the final checkpoint.
+    """
+
+    r: int = field(default=8, metadata={"help": "Lora attention dimension"})
+    target_modules: Optional[Union[List[str], str]] = field(
+        default=None,
+        metadata={
+            "help": "List of module names or regex expression of the module names to replace with Lora."
+            "For example, ['q', 'v'] or '.*decoder.*(SelfAttention|EncDecAttention).*(q|v)$' "
+        },
+    )
+```
+2. 查看`transformers`的`T5`模型源码,他里面的`['q', 'v']`对应的是`nn.Linear`层。
+
+```python
+# src/transformers/models/t5/modeling_t5.py
+class T5Attention(nn.Module):
+    # def __init__(self, config: T5Config, has_relative_attention_bias=False):
+    #     super().__init__()
+    #     self.is_decoder = config.is_decoder
+    #     self.has_relative_attention_bias = has_relative_attention_bias
+    #     self.relative_attention_num_buckets = config.relative_attention_num_buckets
+    #     self.relative_attention_max_distance = config.relative_attention_max_distance
+    #     self.d_model = config.d_model
+    #     self.key_value_proj_dim = config.d_kv
+    #     self.n_heads = config.num_heads
+    #     self.dropout = config.dropout_rate
+    #     self.inner_dim = self.n_heads * self.key_value_proj_dim
+        
+        
+        self.q = nn.Linear(self.d_model, self.inner_dim, bias=False)
+        self.k = nn.Linear(self.d_model, self.inner_dim, bias=False)
+        self.v = nn.Linear(self.d_model, self.inner_dim, bias=False)
+        self.o = nn.Linear(self.inner_dim, self.d_model, bias=False)
+```
+
+3. 因此，找到`thuglm`模型中，有关`nn.Linear`层的名称，就可以了。
+
+4. 使用`lora`对`thuglm`模型做修改
+```python
+from peft import LoraConfig, TaskType, get_peft_model
+from peft.utils.other import fsdp_auto_wrap_policy
+
+from train_thuglm.v1_train_thuglm_lora.thuglm.modeling_chatglm import ChatGLMForConditionalGeneration
+from train_thuglm.v1_train_thuglm_lora.thuglm.tokenization_chatglm import ChatGLMTokenizer
+
+model = ChatGLMForConditionalGeneration.from_pretrained(
+    "THUDM/chatglm-6b", load_in_8bit=False)
+
+tokenizer = ChatGLMTokenizer.from_pretrained("THUDM/chatglm-6b")
+
+# 使用lora模型对thuglm做转换
+
+peft_config = LoraConfig(
+    task_type=TaskType.CAUSAL_LM,
+    inference_mode=False, r=8, lora_alpha=32, lora_dropout=0.1,
+    # ['dense','dense_h_to_4h','dense_4h_to_h'] # 'query_key_value',
+    target_modules=['dense',
+                    'dense_h_to_4h', 'dense_4h_to_h'],
+)
+model = get_peft_model(model, peft_config)
+```
+</details>
+
+
+关键的部分，都已经被列举出来了，剩下的部分，基本上就是和训练`pytorch`模型差不多了，就不再介绍了。
 
 
 

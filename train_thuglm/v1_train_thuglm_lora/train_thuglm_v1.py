@@ -17,10 +17,6 @@ from glob import glob
 model = ChatGLMForConditionalGeneration.from_pretrained(
     "THUDM/chatglm-6b", load_in_8bit=False)
 
-# model.gradient_checkpointing_enable()
-# model.enable_input_require_grads()
-# model.lm_head = CastOutputToFloat(model.lm_head)
-# model.config.use_cache = False
 tokenizer = ChatGLMTokenizer.from_pretrained("THUDM/chatglm-6b")
 
 # %%
