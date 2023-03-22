@@ -11,7 +11,7 @@
 只是对`transofrmers`包的`Trainer`类做了修改，对`modeling_chatglm.py`代码也做了修改。
 这么做，可以让你在拥有22G显存的情况下，可以训练`thu-chatglm-6b`模型。
 
-那么，基于`Trainer`的丰富方法，你可以做很多事情。而且使用`peft`包的`lora`算法，让你在一个消费级别的显卡上，就可以训练`thu-chatglm-6b`模型。
+那么，基于`Trainer`的丰富方法，你可以做很多事情。而且使用`peft`包[https://github.com/huggingface/peft](https://github.com/huggingface/peft)的`lora`算法，让你在一个消费级别的显卡上，就可以训练`thu-chatglm-6b`模型。
 
 # 教程
 
