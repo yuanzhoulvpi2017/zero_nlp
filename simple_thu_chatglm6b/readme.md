@@ -150,7 +150,7 @@ raw_datasets = load_dataset("csv", data_files={
    
 ```python
 
-context_length = 512
+context_length = 512 # 这个大小，基本不影响显存，因此设置为1024也行，目前不知道chatglm要求的文本长度上限为多少
 
 def tokenize(element):
     outputs = tokenizer(
@@ -179,14 +179,14 @@ data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
 
 ## 训练参数设置和训练
 1. `output_dir="test003"`这个表示要把模型保存在这个文件夹下，注意这里，下面要呼应上。
-2. `per_device_train_batch_size=4`表示的是训练数据的`batch_size=4`,`per_device_eval_batch_size=2`表示验证数据的`batch_size=2`
+2. `per_device_train_batch_size=1`表示的是训练数据的`batch_size=1`,`per_device_eval_batch_size=1`表示验证数据的`batch_size=1`，简直是刀剑舔血，到这里，显存基本上是刚刚好，还有200多mb的显存，就要爆炸了.
 3. `eval_steps`、`logging_steps`、`save_steps`这三个值都是一样的，表示每隔100个`batch_size`就对模型进行评估，打印成绩，保存模型，如果你数据不多，可以把这个100调整为合适的大小。
 4. 然后训练部分就结束了。
 ```python
 args = TrainingArguments(
     output_dir="test003",
-    per_device_train_batch_size=4,
-    per_device_eval_batch_size=2,
+    per_device_train_batch_size=1,
+    per_device_eval_batch_size=1,
     evaluation_strategy="steps",
     eval_steps=100,
     logging_steps=100,
