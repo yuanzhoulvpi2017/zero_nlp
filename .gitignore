@@ -140,3 +140,7 @@ model_result/*
 *.model
 *.csv
 *.bin
+
+test003/*
+data2/*
+cache_data/*

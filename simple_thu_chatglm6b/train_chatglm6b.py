@@ -20,7 +20,7 @@ peft_config = LoraConfig(
     task_type=TaskType.CAUSAL_LM,
     inference_mode=False, r=8, lora_alpha=32, lora_dropout=0.1,
     # ['dense','dense_h_to_4h','dense_4h_to_h'] # 'query_key_value',
-    target_modules=['query_key_value', ],
+    target_modules=['query_key_value',],
 )
 model = get_peft_model(model, peft_config)
 
@@ -71,8 +71,8 @@ data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
 
 args = TrainingArguments(
     output_dir="test003",
-    per_device_train_batch_size=4,
-    per_device_eval_batch_size=2,
+    per_device_train_batch_size=1,
+    per_device_eval_batch_size=1,
     evaluation_strategy="steps",
     eval_steps=100,
     logging_steps=100,
