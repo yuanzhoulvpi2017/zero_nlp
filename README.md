@@ -51,7 +51,7 @@
 | 中文clip           | [chinese_clip](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip)                                   | ✅   | ✅    | ✅   | ☑️   | ✅   |
 | 图像生成中文文本         | [VisionEncoderDecoderModel](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit-gpt2-image-chinese-captioning) | ✅   | ✅    | ✅   | ☑️   | ✅   |
 | vit核心源码介绍        | [vit model](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit)                                               | ☑️  | ☑️   | ☑️  | ☑️   | ✅   |
-| 训练Thu-ChatGlm-6b | [simple_thu_chatglm6b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b)                   | ✅   | ✅    | ✅   | ☑️   | ☑️  |
+| 训练Thu-ChatGlm-6b | [simple_thu_chatglm6b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b)                   | ✅   | ✅    | ✅   | ✅    | ☑️  |
 
 ## 数据流程图解
 

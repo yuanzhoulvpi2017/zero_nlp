@@ -144,3 +144,5 @@ model_result/*
 test003/*
 data2/*
 cache_data/*
+/simple_thu_chatglm6b/data2/
+/simple_thu_chatglm6b/cache_data/
