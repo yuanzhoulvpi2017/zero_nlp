@@ -1,3 +1,8 @@
+# 📣注意这个文件夹作废，请查看隔壁的📁 `simple_thu_chatglm6b`📣📣
+
+
+
+
 # 训练`thuglm-6b`模型
 
 # `thuglm-6b`模型和`gpt2`模型的差异
