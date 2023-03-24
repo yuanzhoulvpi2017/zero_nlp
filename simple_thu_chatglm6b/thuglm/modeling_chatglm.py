@@ -710,6 +710,8 @@ class ChatGLMModel(ChatGLMPreTrainedModel):
         self.hidden_size_per_attention_head = self.hidden_size // self.num_attention_heads
         self.position_encoding_2d = config.position_encoding_2d
 
+        self.gradient_checkpointing = True   # 默认打开 用来节约显存
+
         self.word_embeddings = skip_init(
             torch.nn.Embedding,
             num_embeddings=self.vocab_size, embedding_dim=self.hidden_size,
@@ -841,9 +843,19 @@ class ChatGLMModel(ChatGLMPreTrainedModel):
         # [seq_len, batch, hidden_size]
         hidden_states = inputs_embeds.transpose(0, 1)
 
+
+        if self.gradient_checkpointing and self.training:
+            if use_cache:
+                logger.warning_once(
+                    "`use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`..."
+                )
+                use_cache = False
+
         presents = () if use_cache else None
         all_self_attentions = () if output_attentions else None
         all_hidden_states = () if output_hidden_states else None
+
+
 
         seq_length_with_past = seq_length
         past_key_values_length = 0
@@ -861,15 +873,39 @@ class ChatGLMModel(ChatGLMPreTrainedModel):
             if output_hidden_states:
                 all_hidden_states = all_hidden_states + (hidden_states,)
 
-            layer_ret = layer(
-                hidden_states,
-                position_ids=position_ids,
-                attention_mask=attention_mask,
-                layer_id=torch.tensor(i),
-                layer_past=past_key_values[i],
-                use_cache=use_cache,
-                output_attentions=output_attentions
-            )
+            if self.gradient_checkpointing and self.training:
+                # https://mathpretty.com/11156.html
+                use_cache = False
+                def create_custom_forward(module):
+                    def custom_forward(*inputs):
+                        # None for past_key_value
+                        return module(*inputs, use_cache, output_attentions)
+
+                    return custom_forward
+
+                layer_ret = torch.utils.checkpoint.checkpoint(
+                    create_custom_forward(layer),
+                    # create_custom_forward(layer),
+                    hidden_states,
+                    position_ids,
+                    attention_mask,
+                    torch.ones(1, dtype=torch.float32, requires_grad=True) * i,
+                    # torch.tensor(i, requires_grad=True), 
+                    None,
+                
+                )
+
+            else:
+
+                layer_ret = layer(
+                    hidden_states,
+                    position_ids=position_ids,
+                    attention_mask=attention_mask,
+                    layer_id=torch.tensor(i),
+                    layer_past=past_key_values[i],
+                    use_cache=use_cache,
+                    output_attentions=output_attentions
+                )
 
             hidden_states = layer_ret[0]
 

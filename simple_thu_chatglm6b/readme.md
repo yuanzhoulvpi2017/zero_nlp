@@ -1,5 +1,15 @@
 # 🚀 最简单、最便宜的训练`thu-chatglm-6b`模型教程 🎯
 
+# 📝 更新记录
+## **03-24 版本**
+1. 💻 现在可以在16G显存的显卡上进行训练（在`batchsize=1,content_length=512`的情况下）
+2. 🚀使用了`torch.utils.checkpoint`，降低了显存的占用（从之前的24G降低到15.2G左右），但是训练的时间花费更多。（如果你想关闭这个功能，在`thuglm/modeling_chatglm.py`文件的第`713`行`self.gradient_checkpointing = True`中，把`True`改为`False`即可）
+3. 🤖 精度依然是使用的`fp16`，而不是`int8`.
+4. 💨 依然使用了`lora`方法，如果不想使用这个方法，我后续可以把这个方法关闭。
+5. 📣 现在你可以把`content_length`调整到`1024`， `batchsize`可以调整到`4`，即使这样，显存依然维持在23G左右。
+![](images/WechatIMG15931.jpeg)
+
+## **03-22 版本**
 1. 💻一个3090消费级的显卡就可以训练
 2. 🎯支持`tensorboard`等各种花里胡哨小插件
 3. 🚀也可以多卡并行，训练非常快

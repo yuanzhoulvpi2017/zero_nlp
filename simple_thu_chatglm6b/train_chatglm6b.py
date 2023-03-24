@@ -71,7 +71,7 @@ data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
 
 args = TrainingArguments(
     output_dir="test003",
-    per_device_train_batch_size=1,
+    per_device_train_batch_size=1, # 如果在24G显存上的显卡，可以开到4
     per_device_eval_batch_size=1,
     evaluation_strategy="steps",
     eval_steps=100,
