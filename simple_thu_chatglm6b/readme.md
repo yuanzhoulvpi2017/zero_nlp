@@ -5,15 +5,16 @@
 
 ## **03-27 版本**
 1. 🚀**添加了多卡并行的功能**
-2. ✅会基于你的显卡数量，自动进行并行计算
+2. ✅会基于你的显卡数量，自动进行并行计算，也可以自己选择哪些卡，在代码的`train_chatglm6b.py`文件的前两行代码
 3. 😘我做的事情：就是改了我就是修改了`thuglm/modeling_chatglm.py`代码，对里面涉及到的变量，做了设备的指定（虽然原始的代码也做了，但是做了并不充分）
 4. 🤗本质上，使用的就是pytorch的`nn.DataParallel`功能,因为我就是想让他支持`transformers`的`Trainer`。
 
 ### ⛔️注意事项
 1. 在使用的时候，第一张卡的压力要大一点。
-2. 我在测试的时候，发现在3个3090上，是完全没有问题的。但是在4个3090的时候，会出现小bug：`RuntimeError: CUDA error: an illegal memory access was encountered`（说明我的deivce分配依然不太对）。
+2. 我在测试的时候，发现在3个3090上，是完全没有问题的。但是在4个3090的时候，会出现小bug：`RuntimeError: CUDA error: an illegal memory access was encountered`（说明我的device分配依然不太对）。
 3. 我在两个T4的机器上训练，会出现一个小bug:`TypeError: 'NoneType' object is not subscriptable`（这个应该是我的代码不对）
 4. 虽然bug不少，但是可以知道在什么地方优化，知道改哪里了，后面将继续优化！！！🎯 冲！！！
+5. 各位大佬，多提一提bug，让小弟来改。
 
 ## **03-24 版本**
 1. 💻 现在可以在16G显存的显卡上进行训练（在`batchsize=1,content_length=512`的情况下）
@@ -48,14 +49,13 @@
 但是，你在从github上下载我这个仓库后，是看不到这几个文件的：
 1. `pytorch_model-00001-of-00008.bin`、
 2. `pytorch_model-00002-of-00008.bin`、
-3. `pytorch_model-00002-of-00008.bin`、
-4. `pytorch_model-00003-of-00008.bin`、
-5. `pytorch_model-00004-of-00008.bin`、
-6. `pytorch_model-00005-of-00008.bin`、
-7. `pytorch_model-00006-of-00008.bin`、
-8. `pytorch_model-00007-of-00008.bin`、
-9. `pytorch_model-00008-of-00008.bin`、
-10. `ice_text.model`
+3. `pytorch_model-00003-of-00008.bin`、
+4. `pytorch_model-00004-of-00008.bin`、
+5. `pytorch_model-00005-of-00008.bin`、
+6. `pytorch_model-00006-of-00008.bin`、
+7. `pytorch_model-00007-of-00008.bin`、
+8. `pytorch_model-00008-of-00008.bin`、
+9. `ice_text.model`
 
 你需要从[https://huggingface.co/THUDM/chatglm-6b/tree/main](https://huggingface.co/THUDM/chatglm-6b/tree/main) 这里把上面列举的文件下载下来。
 

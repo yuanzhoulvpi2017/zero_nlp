@@ -1,6 +1,7 @@
 # %%
+# 在这里控制要使用的显卡
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2" # 在这里控制要使用的显卡
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2"
 
 # %%
 from MyTrainer import Trainer
