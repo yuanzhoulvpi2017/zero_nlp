@@ -1,6 +1,20 @@
 # 🚀 最简单、最便宜的训练`thu-chatglm-6b`模型教程 🎯
 
+
 # 📝 更新记录
+
+## **03-27 版本**
+1. 🚀**添加了多卡并行的功能**
+2. ✅会基于你的显卡数量，自动进行并行计算
+3. 😘我做的事情：就是改了我就是修改了`thuglm/modeling_chatglm.py`代码，对里面涉及到的变量，做了设备的指定（虽然原始的代码也做了，但是做了并不充分）
+4. 🤗本质上，使用的就是pytorch的`nn.DataParallel`功能,因为我就是想让他支持`transformers`的`Trainer`。
+
+### ⛔️注意事项
+1. 在使用的时候，第一张卡的压力要大一点。
+2. 我在测试的时候，发现在3个3090上，是完全没有问题的。但是在4个3090的时候，会出现小bug：`RuntimeError: CUDA error: an illegal memory access was encountered`（说明我的deivce分配依然不太对）。
+3. 我在两个T4的机器上训练，会出现一个小bug:`TypeError: 'NoneType' object is not subscriptable`（这个应该是我的代码不对）
+4. 虽然bug不少，但是可以知道在什么地方优化，知道改哪里了，后面将继续优化！！！🎯 冲！！！
+
 ## **03-24 版本**
 1. 💻 现在可以在16G显存的显卡上进行训练（在`batchsize=1,content_length=512`的情况下）
 2. 🚀使用了`torch.utils.checkpoint`，降低了显存的占用（从之前的24G降低到15.2G左右），但是训练的时间花费更多。（如果你想关闭这个功能，在`thuglm/modeling_chatglm.py`文件的第`713`行`self.gradient_checkpointing = True`中，把`True`改为`False`即可）

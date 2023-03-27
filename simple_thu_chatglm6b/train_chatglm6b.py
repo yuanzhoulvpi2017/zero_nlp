@@ -1,4 +1,8 @@
 # %%
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2" # 在这里控制要使用的显卡
+
+# %%
 from MyTrainer import Trainer
 from transformers import TrainingArguments
 from transformers import DataCollatorForLanguageModeling

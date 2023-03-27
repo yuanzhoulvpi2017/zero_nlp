@@ -187,114 +187,6 @@ def apply_rotary_pos_emb_index(q, k, cos, sin, position_id):
     return q, k
 
 
-def attention_fn(
-        self,
-        query_layer,
-        key_layer,
-        value_layer,
-        attention_mask,
-        hidden_size_per_partition,
-        layer_id,
-        layer_past=None,
-        scaling_attention_score=True,
-        use_cache=False,
-):
-    if layer_past is not None:
-        past_key, past_value = layer_past
-        key_layer = torch.cat((past_key, key_layer), dim=0)
-        value_layer = torch.cat((past_value, value_layer), dim=0)
-
-    # seqlen, batch, num_attention_heads, hidden_size_per_attention_head
-    seq_len, b, nh, hidden_size = key_layer.shape
-
-    if use_cache:
-        present = (key_layer, value_layer)
-    else:
-        present = None
-
-    query_key_layer_scaling_coeff = float(layer_id + 1)
-    if scaling_attention_score:
-        query_layer = query_layer / (math.sqrt(hidden_size) * query_key_layer_scaling_coeff)
-
-    # ===================================
-    # Raw attention scores. [b, np, s, s]
-    # ===================================
-
-    # [b, np, sq, sk]
-    output_size = (query_layer.size(1), query_layer.size(2), query_layer.size(0), key_layer.size(0))
-
-    # [sq, b, np, hn] -> [sq, b * np, hn]
-    query_layer = query_layer.view(output_size[2], output_size[0] * output_size[1], -1)
-    # [sk, b, np, hn] -> [sk, b * np, hn]
-    key_layer = key_layer.view(output_size[3], output_size[0] * output_size[1], -1)
-
-    matmul_result = torch.empty(
-        output_size[0] * output_size[1],
-        output_size[2],
-        output_size[3],
-        dtype=query_layer.dtype,
-        device=query_layer.device,
-    )
-
-    matmul_result = torch.baddbmm(
-        matmul_result,
-        query_layer.transpose(0, 1),  # [b * np, sq, hn]
-        key_layer.transpose(0, 1).transpose(1, 2),  # [b * np, hn, sk]
-        beta=0.0,
-        alpha=1.0,
-    )
-
-    # change view to [b, np, sq, sk]
-    attention_scores = matmul_result.view(*output_size)
-
-    if self.scale_mask_softmax:
-        self.scale_mask_softmax.scale = query_key_layer_scaling_coeff
-        attention_probs = self.scale_mask_softmax(attention_scores, attention_mask.contiguous())
-    else:
-        if not (attention_mask == 0).all():
-            # if auto-regressive, skip
-            attention_scores.masked_fill_(attention_mask, -10000.0)
-        dtype = attention_scores.type()
-        attention_scores = attention_scores.float()
-        attention_scores = attention_scores * query_key_layer_scaling_coeff
-
-        attention_probs = F.softmax(attention_scores, dim=-1)
-
-        attention_probs = attention_probs.type(dtype)
-
-    # =========================
-    # Context layer. [sq, b, hp]
-    # =========================
-
-    # value_layer -> context layer.
-    # [sk, b, np, hn] --> [b, np, sq, hn]
-
-    # context layer shape: [b, np, sq, hn]
-    output_size = (value_layer.size(1), value_layer.size(2), query_layer.size(0), value_layer.size(3))
-
-    # change view [sk, b * np, hn]
-    value_layer = value_layer.view(value_layer.size(0), output_size[0] * output_size[1], -1)
-
-    # change view [b * np, sq, sk]
-    attention_probs = attention_probs.view(output_size[0] * output_size[1], output_size[2], -1)
-
-    # matmul: [b * np, sq, hn]
-    context_layer = torch.bmm(attention_probs, value_layer.transpose(0, 1))
-
-    # change view [b, np, sq, hn]
-    context_layer = context_layer.view(*output_size)
-
-    # [b, np, sq, hn] --> [sq, b, np, hn]
-    context_layer = context_layer.permute(2, 0, 1, 3).contiguous()
-
-    # [sq, b, np, hn] --> [sq, b, hp]
-    new_context_layer_shape = context_layer.size()[:-2] + (hidden_size_per_partition,)
-    context_layer = context_layer.view(*new_context_layer_shape)
-
-    outputs = (context_layer, present, attention_probs)
-
-    return outputs
-
 
 class SelfAttention(torch.nn.Module):
     def __init__(self, hidden_size, num_attention_heads,
@@ -384,7 +276,7 @@ class SelfAttention(torch.nn.Module):
         """
 
         # [seq_len, batch, 3 * hidden_size]
-        mixed_raw_layer = self.query_key_value(hidden_states)
+        mixed_raw_layer = self.query_key_value.to(device=hidden_states.device)(hidden_states)
 
         # [seq_len, batch, 3 * hidden_size] --> [seq_len, batch, num_attention_heads, 3 * hidden_size_per_attention_head]
         new_tensor_shape = mixed_raw_layer.size()[:-1] + (
@@ -399,6 +291,7 @@ class SelfAttention(torch.nn.Module):
         if self.position_encoding_2d:
             q1, q2 = query_layer.chunk(2, dim=(query_layer.ndim - 1))
             k1, k2 = key_layer.chunk(2, dim=(key_layer.ndim - 1))
+            position_ids = position_ids.to(q1.device)
             cos, sin = self.rotary_emb(q1, seq_len=position_ids.max() + 1)
             position_ids, block_position_ids = position_ids[:, 0, :].transpose(0, 1).contiguous(), \
                 position_ids[:, 1, :].transpose(0, 1).contiguous()
@@ -408,22 +301,25 @@ class SelfAttention(torch.nn.Module):
             key_layer = torch.concat([k1, k2], dim=(k1.ndim - 1))
         else:
             position_ids = position_ids.transpose(0, 1)
+            position_ids = position_ids.to(value_layer.device)
             cos, sin = self.rotary_emb(value_layer, seq_len=position_ids.max() + 1)
             # [seq_len, batch, num_attention_heads, hidden_size_per_attention_head]
             query_layer, key_layer = apply_rotary_pos_emb_index(query_layer, key_layer, cos, sin, position_ids)
 
         # [seq_len, batch, hidden_size]
-        context_layer, present, attention_probs = attention_fn(
-            self=self,
+        context_layer, present, attention_probs = self.attention_fn(
             query_layer=query_layer,
             key_layer=key_layer,
             value_layer=value_layer,
-            attention_mask=attention_mask,
+            attention_mask=attention_mask.to(query_layer.device),
             hidden_size_per_partition=self.hidden_size_per_partition,
             layer_id=layer_id,
             layer_past=layer_past,
             use_cache=use_cache
         )
+        # print("*"*80)
+        # print(f"{context_layer.device = }")
+        # print(f"{self.dense.weight.device = }")
 
         output = self.dense(context_layer)
 
@@ -433,6 +329,118 @@ class SelfAttention(torch.nn.Module):
             outputs += (attention_probs,)
 
         return outputs  # output, present, attention_probs
+
+    def attention_fn(
+            self,
+            query_layer,
+            key_layer,
+            value_layer,
+            attention_mask,
+            hidden_size_per_partition,
+            layer_id,
+            layer_past=None,
+            scaling_attention_score=True,
+            use_cache=False,
+                ):
+        if layer_past is not None:
+            past_key, past_value = layer_past
+            key_layer = torch.cat((past_key, key_layer), dim=0)
+            value_layer = torch.cat((past_value, value_layer), dim=0)
+
+        # seqlen, batch, num_attention_heads, hidden_size_per_attention_head
+        seq_len, b, nh, hidden_size = key_layer.shape
+
+        if use_cache:
+            present = (key_layer, value_layer)
+        else:
+            present = None
+
+        query_key_layer_scaling_coeff = float(layer_id + 1)
+        if scaling_attention_score:
+            query_layer = query_layer / (math.sqrt(hidden_size) * query_key_layer_scaling_coeff)
+
+        # ===================================
+        # Raw attention scores. [b, np, s, s]
+        # ===================================
+
+        # [b, np, sq, sk]
+        output_size = (query_layer.size(1), query_layer.size(2), query_layer.size(0), key_layer.size(0))
+
+        # [sq, b, np, hn] -> [sq, b * np, hn]
+        query_layer = query_layer.view(output_size[2], output_size[0] * output_size[1], -1)
+        # [sk, b, np, hn] -> [sk, b * np, hn]
+        key_layer = key_layer.view(output_size[3], output_size[0] * output_size[1], -1)
+
+        matmul_result = torch.empty(
+            output_size[0] * output_size[1],
+            output_size[2],
+            output_size[3],
+            dtype=query_layer.dtype,
+            device=query_layer.device,
+        )
+
+        matmul_result = torch.baddbmm(
+            matmul_result,
+            query_layer.transpose(0, 1),  # [b * np, sq, hn]
+            key_layer.transpose(0, 1).transpose(1, 2),  # [b * np, hn, sk]
+            beta=0.0,
+            alpha=1.0,
+        )
+
+        # change view to [b, np, sq, sk]
+        attention_scores = matmul_result.view(*output_size)
+
+        if self.scale_mask_softmax:
+            self.scale_mask_softmax.scale = query_key_layer_scaling_coeff
+            attention_probs = self.scale_mask_softmax(attention_scores, attention_mask.contiguous())
+        else:
+            # print("*"*80)
+            # print(f"{attention_mask.device = }")
+            # print(f"{attention_scores.device = }")
+            if not (attention_mask == 0).all():
+                # if auto-regressive, skip
+                attention_scores.masked_fill_(attention_mask, -10000.0)
+            dtype = attention_scores.type()
+            attention_scores = attention_scores.float()
+            attention_scores = attention_scores * query_key_layer_scaling_coeff
+
+            attention_probs = F.softmax(attention_scores, dim=-1)
+
+            attention_probs = attention_probs.type(dtype)
+
+        # =========================
+        # Context layer. [sq, b, hp]
+        # =========================
+
+        # value_layer -> context layer.
+        # [sk, b, np, hn] --> [b, np, sq, hn]
+
+        # context layer shape: [b, np, sq, hn]
+        output_size = (value_layer.size(1), value_layer.size(2), query_layer.size(0), value_layer.size(3))
+
+        # change view [sk, b * np, hn]
+        value_layer = value_layer.view(value_layer.size(0), output_size[0] * output_size[1], -1)
+
+        # change view [b * np, sq, sk]
+        attention_probs = attention_probs.view(output_size[0] * output_size[1], output_size[2], -1)
+
+        # matmul: [b * np, sq, hn]
+        context_layer = torch.bmm(attention_probs, value_layer.transpose(0, 1))
+
+        # change view [b, np, sq, hn]
+        context_layer = context_layer.view(*output_size)
+
+        # [b, np, sq, hn] --> [sq, b, np, hn]
+        context_layer = context_layer.permute(2, 0, 1, 3).contiguous()
+
+        # [sq, b, np, hn] --> [sq, b, hp]
+        new_context_layer_shape = context_layer.size()[:-2] + (hidden_size_per_partition,)
+        context_layer = context_layer.view(*new_context_layer_shape)
+
+        outputs = (context_layer, present, attention_probs)
+
+        return outputs
+
 
 
 class GEGLU(torch.nn.Module):
@@ -838,7 +846,10 @@ class ChatGLMModel(ChatGLMPreTrainedModel):
                 )
 
         if inputs_embeds is None:
-            inputs_embeds = self.word_embeddings(input_ids)
+            # print("*"*80)
+            # print(f"{input_ids.device = }")
+            # print(f"{self.word_embeddings.weight.device = }")
+            inputs_embeds = self.word_embeddings(input_ids.to(self.word_embeddings.weight.device))
 
         # [seq_len, batch, hidden_size]
         hidden_states = inputs_embeds.transpose(0, 1)
@@ -890,9 +901,9 @@ class ChatGLMModel(ChatGLMPreTrainedModel):
                     position_ids,
                     attention_mask,
                     torch.ones(1, dtype=torch.float32, requires_grad=True) * i,
-                    # torch.tensor(i, requires_grad=True), 
-                    None,
-                
+                    # torch.tensor(i, requires_grad=True),
+                    past_key_values[i],
+
                 )
 
             else:
@@ -1078,10 +1089,9 @@ class ChatGLMForConditionalGeneration(ChatGLMPreTrainedModel):
             shift_labels = labels[..., 1:].contiguous()
             # Flatten the tokens
             loss_fct = CrossEntropyLoss()
-            loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
+            # print(f"{shift_logits.device = }")
+            loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)).to(shift_labels.device), shift_labels.view(-1))
 
-            lm_logits = lm_logits.to(hidden_states.dtype)
-            loss = loss.to(hidden_states.dtype)
 
         if not return_dict:
             output = (lm_logits,) + transformer_outputs[1:]
