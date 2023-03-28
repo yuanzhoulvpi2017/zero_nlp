@@ -243,43 +243,7 @@ trainer.train()
 1. 推理部分，直接看`infer.ipynb`代码
 2. 能到这里，也是恭喜你，微调模型已经成功了。这个时候，在这个文件夹下，肯定有一个文件夹叫`test003`（就是上面`output_dir="test003"`对应的文件夹）
 3. 在这个文件夹下，你肯定可以看到很多`checkpoint-xxx`，选择一个你喜欢的（当然，肯定是最好选择最新的）。
-4. ** 然后把`thuglm/config.json`文件复制到`test003/checkpoint-xxx`里面。** 这个步骤非常重要。
 
-
-## 加载包
-
-```python
-from transformers import AutoTokenizer
-from thuglm.modeling_chatglm import ChatGLMForConditionalGeneration
-import torch
-```
-
-
-## 加载我们训练好的模型
-
-```python
-
-# 这个是我们训练好的模型
-model = ChatGLMForConditionalGeneration.from_pretrained("test003//checkpoint-200").cuda() #
-
-# 这个是原始发布的模型
-# model = ChatGLMForConditionalGeneration.from_pretrained("thuglm").half().cuda() #
-```
-
-## 加载tokenizer
-1. 因为我们模型在训练的过程中，没有保存tokenizer，而且在训练的过程中，也没什么新的word。所以直接使用原始的tokenizer
-```python
-tokenizer = AutoTokenizer.from_pretrained("thuglm", trust_remote_code=True)
-```
-
-## 推理，生成文本
-
-```python
-with torch.autocast("cuda"):
-    res, history = model.chat(tokenizer=tokenizer, query="你是谁? 我是由良睦路程序员训练的一个AI模型")
-        # res = model.forward(input_ids=all_input.get('input_ids').cuda())
-    print(res)
-```
 
 
 # 🎯
