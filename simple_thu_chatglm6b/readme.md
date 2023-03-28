@@ -5,6 +5,8 @@
 ## **03-28 版本**
 1. 解决了`03-27`版本中、在部分设备上、进行单机多卡计算的时候，出现的`TypeError: 'NoneType' object is not subscriptable`问题
 2. 解决了`03-24`版本中、训练了，但是没效果的问题
+3. 添加了一整套的完整的训练代码`code02_训练模型全部流程.ipynb`,使用alpaca数据集格式.
+4. 感谢`https://github.com/hikariming/alpaca_chinese_dataset`整理的数据
 
 ## **03-27 版本**
 1. 🚀**添加了多卡并行的功能**
@@ -103,141 +105,8 @@ pip install protobuf==3.20.0 transformers icetk cpm_kernels peft
 就这么简单，不需要安装别的东西了
 
 # ✅ 训练部分
-训练部分，直接运行`train_chatglm6b.py`代码，就可以了，但是这里，直接在写一次详细的讲解。
 
-## 加载包
-```python
-
-#这个是我从transformers里面复制的Trainer，为chatglm做了适应
-from MyTrainer import Trainer
-
-
-from transformers import TrainingArguments
-from transformers import DataCollatorForLanguageModeling
-import random
-from glob import glob
-from datasets import load_dataset, DatasetDict # 加载数据用的
-from transformers import AutoTokenizer, AutoModel
-
-# lora已经在peft里面实现了，因此使用peft包即可
-from peft import get_peft_model, LoraConfig, TaskType
-
-```
-
-## 加载模型
-
-因为我们已经从`huggingface-hub`上把这个模型需要的东西全部下载到`thuglm`文件里面了，所以这里导入模型，只需要使用`"thuglm"`路径就行了
-```python
-
-tokenizer = AutoTokenizer.from_pretrained("thuglm", trust_remote_code=True)
-model = AutoModel.from_pretrained(
-    "thuglm", trust_remote_code=True).half().cuda()
-
-```
-
-## 利用`lora`对模型做转换
-
-1. 简单来说，`lora`就是对`nn.Linear`做处理，而模型里面有`nn.Linear`层的名字主要为`'dense','dense_h_to_4h','dense_4h_to_h','query_key_value',`
-2. 但是我们这里只是对`query_kery_value`做处理，你喜欢，换成别的应该也可以。
-3. 反正到这里，模型已经被`peft`包给包装好了。
-```python
-
-peft_config = LoraConfig(
-    task_type=TaskType.CAUSAL_LM,
-    inference_mode=False, r=8, lora_alpha=32, lora_dropout=0.1,
-    # ['dense','dense_h_to_4h','dense_4h_to_h'] # 'query_key_value',
-    target_modules=['query_key_value', ],
-)
-model = get_peft_model(model, peft_config)
-```
-
-## 加载数据
-1. 我们传递数据的时候，是通过数据的路径来传递的。
-2. 因此在`all_file_list`这个列表里面，储存的都是数据的路径。
-3. 我也就是随便分了训练集和测试集，你按你需求来。
-4. 注意，数据里面，每一个`csv`文件都是有一列叫`content`列。这个和下文呼应。
-```python
-random.seed(42)
-
-all_file_list = glob(pathname="data2/*")
-test_file_list = random.sample(all_file_list, 50)
-train_file_list = [i for i in all_file_list if i not in test_file_list]
-# len(train_file_list), len(test_file_list)
-
-raw_datasets = load_dataset("csv", data_files={
-                            'train': train_file_list, 'valid': test_file_list}, cache_dir="cache_data")
-
-```
-
-## 数据转换
-
-1. `context_length`表示每一条文本的长度，这里设置的为最高512.
-2. 注意`tokenize`函数里面，有一个`element['content']`，这句话就是要把数据的这一列，通过`tokenizer`给转换成`input_ids`字典。
-3. 你注意到最后一个`data_collactor`了么，他在训练的时候，会创建一个新的变量叫`label`，而这个`label`本质上就是`input_ids`。自回归模型都是这么玩的。（虽然看着都是使用一列数据，没有标签，但是在计算`loss`的时候，就是错位了一下）
-   
-```python
-
-context_length = 512 # 这个大小，基本不影响显存，因此设置为1024也行，目前不知道chatglm要求的文本长度上限为多少
-
-def tokenize(element):
-    outputs = tokenizer(
-        element["content"],
-        truncation=True,
-        max_length=context_length,
-        return_overflowing_tokens=True,
-        return_length=True,
-    )
-    input_batch = []
-    for length, input_ids in zip(outputs["length"], outputs["input_ids"]):
-        if length == context_length:
-            input_batch.append(input_ids)
-    return {"input_ids": input_batch}
-
-
-tokenized_datasets = raw_datasets.map(
-    tokenize, batched=True, remove_columns=raw_datasets["train"].column_names
-)
-tokenized_datasets
-
-data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
-
-```
-
-
-## 训练参数设置和训练
-1. `output_dir="test003"`这个表示要把模型保存在这个文件夹下，注意这里，下面要呼应上。
-2. `per_device_train_batch_size=1`表示的是训练数据的`batch_size=1`,`per_device_eval_batch_size=1`表示验证数据的`batch_size=1`，简直是刀剑舔血，到这里，显存基本上是刚刚好，还有200多mb的显存，就要爆炸了.
-3. `eval_steps`、`logging_steps`、`save_steps`这三个值都是一样的，表示每隔100个`batch_size`就对模型进行评估，打印成绩，保存模型，如果你数据不多，可以把这个100调整为合适的大小。
-4. 然后训练部分就结束了。
-```python
-args = TrainingArguments(
-    output_dir="test003",
-    per_device_train_batch_size=1,
-    per_device_eval_batch_size=1,
-    evaluation_strategy="steps",
-    eval_steps=100,
-    logging_steps=100,
-    gradient_accumulation_steps=8,
-    num_train_epochs=1,
-    weight_decay=0.1,
-    warmup_steps=1_000,
-    lr_scheduler_type="cosine",
-    learning_rate=5e-4,
-    save_steps=100,
-    fp16=True,
-    push_to_hub=False,
-)
-
-trainer = Trainer(
-    model=model,
-    tokenizer=tokenizer,
-    args=args,
-    data_collator=data_collator,
-    train_dataset=tokenized_datasets["train"],
-    eval_dataset=tokenized_datasets["valid"],
-)
-trainer.train()
-```
+## 🎯 **在最新的版本中，只需要查看`code02_训练模型全部流程.ipynb`文件就行了**
 
 
 # ✅ 推理部分
