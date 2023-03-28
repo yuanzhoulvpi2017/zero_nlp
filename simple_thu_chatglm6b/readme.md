@@ -5,7 +5,7 @@
 ## **03-28 版本**
 1. 解决了`03-27`版本中、在部分设备上、进行单机多卡计算的时候，出现的`TypeError: 'NoneType' object is not subscriptable`问题
 2. 解决了`03-24`版本中、训练了，但是没效果的问题
-3. 添加了一整套的完整的训练代码`code02_训练模型全部流程.ipynb`,使用alpaca数据集格式.
+3. 添加了一整套的完整的训练代码`code02_训练模型全部流程.ipynb`,使用alpaca数据集格式，包括数据清洗，数据转换，模型训练等一系列步骤。
 4. 感谢`https://github.com/hikariming/alpaca_chinese_dataset`整理的数据
 
 ## **03-27 版本**
