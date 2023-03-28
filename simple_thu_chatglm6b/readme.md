@@ -85,7 +85,7 @@ pip install protobuf==3.20.0 transformers icetk cpm_kernels peft
 
 # ✅ 训练部分
 
-## 🎯 **在最新的版本中，只需要查看`code02_训练模型全部流程.ipynb`文件就行了**
+## 🎯 **在最新的版本中，只需要查看[`code02_训练模型全部流程.ipynb`](https://github.com/yuanzhoulvpi2017/zero_nlp/blob/main/simple_thu_chatglm6b/code02_%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%85%A8%E9%83%A8%E6%B5%81%E7%A8%8B.ipynb)文件就行了**
 
 
 # ✅ 推理部分
