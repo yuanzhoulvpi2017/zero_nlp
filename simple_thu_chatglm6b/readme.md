@@ -6,7 +6,7 @@
 1. ✅ 解决了`03-27`版本中、在部分设备上、进行单机多卡计算的时候，出现的`TypeError: 'NoneType' object is not subscriptable`问题
 2. ✅ 解决了`03-24`版本中、训练了，但是没效果的问题
 3. 🎯 添加了一整套的完整的训练代码[`code02_训练模型全部流程.ipynb`](https://github.com/yuanzhoulvpi2017/zero_nlp/blob/main/simple_thu_chatglm6b/code02_%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%85%A8%E9%83%A8%E6%B5%81%E7%A8%8B.ipynb),使用alpaca数据集格式，包括数据清洗，数据转换，模型训练等一系列步骤。
-4. ❤️ 感谢[`https://github.com/hikariming/alpaca_chinese_dataset`](https://github.com/hikariming/alpaca_chinese_dataset)整理的数据
+4. ❤️ 感谢[`https://github.com/hikariming/alpaca_chinese_dataset`](https://github.com/hikariming/alpaca_chinese_dataset)提供的数据
 
 ## **03-27 版本**
 1. 🚀 **添加了多卡并行的功能**
