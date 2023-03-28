@@ -3,6 +3,7 @@
 import math
 import copy
 import os
+import sys
 
 import torch
 import torch.utils.checkpoint
@@ -27,11 +28,12 @@ from transformers.modeling_utils import PreTrainedModel
 from transformers.utils import logging
 from .configuration_chatglm import ChatGLMConfig
 
-# flags required to enable jit fusion kernels
-torch._C._jit_set_profiling_mode(False)
-torch._C._jit_set_profiling_executor(False)
-torch._C._jit_override_can_fuse_on_cpu(True)
-torch._C._jit_override_can_fuse_on_gpu(True)
+if sys.platform != 'darwin':
+    torch._C._jit_set_profiling_mode(False)
+    torch._C._jit_set_profiling_executor(False)
+    torch._C._jit_override_can_fuse_on_cpu(True)
+    torch._C._jit_override_can_fuse_on_gpu(True)
+
 
 logger = logging.get_logger(__name__)
 
@@ -138,7 +140,7 @@ class RotaryEmbedding(torch.nn.Module):
         if learnable:
             self.inv_freq = torch.nn.Parameter(inv_freq)
             self.max_seq_len_cached = None
-        else:
+        else: 
             self.register_buffer('inv_freq', inv_freq)
             self.max_seq_len_cached = None
             self.cos_cached = None
@@ -154,22 +156,24 @@ class RotaryEmbedding(torch.nn.Module):
             seq_len = x.shape[seq_dim]
         if self.max_seq_len_cached is None or (seq_len > self.max_seq_len_cached):
             self.max_seq_len_cached = None if self.learnable else seq_len
-            t = torch.arange(seq_len, device=x.device, dtype=self.inv_freq.dtype)
-            freqs = torch.einsum('i,j->ij', t, self.inv_freq)
-            # Different from paper, but it uses a different permutation in order to obtain the same calculation
-            emb = torch.cat((freqs, freqs), dim=-1).to(x.device)
-            if self.precision == torch.bfloat16:
-                emb = emb.float()
+        
+        t = torch.arange(seq_len, device=x.device, dtype=self.inv_freq.dtype)
+        freqs = torch.einsum('i,j->ij', t, self.inv_freq)
+        # Different from paper, but it uses a different permutation in order to obtain the same calculation
+        emb = torch.cat((freqs, freqs), dim=-1).to(x.device)
+        if self.precision == torch.bfloat16:
+            emb = emb.float()
 
-            # [sx, 1 (b * np), hn]
-            cos_cached = emb.cos()[:, None, :]
-            sin_cached = emb.sin()[:, None, :]
-            if self.precision == torch.bfloat16:
-                cos_cached = cos_cached.bfloat16()
-                sin_cached = sin_cached.bfloat16()
-            if self.learnable:
-                return cos_cached, sin_cached
-            self.cos_cached, self.sin_cached = cos_cached, sin_cached
+        # [sx, 1 (b * np), hn]
+        cos_cached = emb.cos()[:, None, :]
+        sin_cached = emb.sin()[:, None, :]
+        if self.precision == torch.bfloat16:
+            cos_cached = cos_cached.bfloat16()
+            sin_cached = sin_cached.bfloat16()
+        if self.learnable:
+            return cos_cached, sin_cached
+        self.cos_cached, self.sin_cached = cos_cached, sin_cached
+
         return self.cos_cached[:seq_len, ...], self.sin_cached[:seq_len, ...]
 
 
@@ -901,9 +905,9 @@ class ChatGLMModel(ChatGLMPreTrainedModel):
                     position_ids,
                     attention_mask,
                     torch.ones(1, dtype=torch.float32, requires_grad=True) * i,
-                    # torch.tensor(i, requires_grad=True),
+                    # torch.tensor(i, requires_grad=True), 
                     past_key_values[i],
-
+                
                 )
 
             else:
@@ -1089,7 +1093,6 @@ class ChatGLMForConditionalGeneration(ChatGLMPreTrainedModel):
             shift_labels = labels[..., 1:].contiguous()
             # Flatten the tokens
             loss_fct = CrossEntropyLoss()
-            # print(f"{shift_logits.device = }")
             loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)).to(shift_labels.device), shift_labels.view(-1))
 
 
