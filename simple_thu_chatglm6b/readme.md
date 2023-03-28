@@ -2,6 +2,8 @@
 
 
 # 📝 更新记录
+## **03-28 版本**
+1. 解决了`03-27`版本中、在部分设备上、进行单机多卡计算的时候，出现的``TypeError: 'NoneType' object is not subscriptable`问题
 
 ## **03-27 版本**
 1. 🚀**添加了多卡并行的功能**
@@ -12,7 +14,7 @@
 ### ⛔️注意事项
 1. 在使用的时候，第一张卡的压力要大一点。
 2. 我在测试的时候，发现在3个3090上，是完全没有问题的。但是在4个3090的时候，会出现小bug：`RuntimeError: CUDA error: an illegal memory access was encountered`（说明我的device分配依然不太对）。
-3. 我在两个T4的机器上训练，会出现一个小bug:`TypeError: 'NoneType' object is not subscriptable`（这个应该是我的代码不对）
+3. ~~我在两个T4的机器上训练，会出现一个小bug:`TypeError: 'NoneType' object is not subscriptable`（这个应该是我的代码不对）~~
 4. 虽然bug不少，但是可以知道在什么地方优化，知道改哪里了，后面将继续优化！！！🎯 冲！！！
 5. 各位大佬，多提一提bug，让小弟来改。
 
