@@ -1,7 +1,8 @@
 # 🚀 最简单、最便宜的训练`thu-chatglm-6b`模型教程 🎯
-
-
+1. 本文件夹📁只能进行单机单卡训练，如果想要使用单机多卡，请查看文件夹📁[Chatglm6b_ModelParallel](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/Chatglm6b_ModelParallel)
 # 📝 更新记录
+## **04-01 版本**
+1. **训练`chatglm-6b`模型，可以使用模型并行的方式了！！！** 请点击链接查看[Chatglm6b_ModelParallel](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/Chatglm6b_ModelParallel)
 ## **03-29 版本**
 1. 主要是做了实验，比如修改名称，大功告成~ 总结出相关的经验
 ![](images/showresult0329.png)
