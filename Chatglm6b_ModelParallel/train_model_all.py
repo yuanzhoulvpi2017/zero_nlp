@@ -5,7 +5,9 @@
 # 
 # ## 清洗数据
 
-
+# 在这里控制要使用的显卡
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
 # 如果没有下载这个仓库，可以使用下面命令进行clone
 
 # !git clone https://github.com/hikariming/alpaca_chinese_dataset.git
