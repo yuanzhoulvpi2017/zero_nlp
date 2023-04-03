@@ -1,0 +1,39 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--do_train","yes",
+                "--train_file","AdvertiseGen/dev_small.json",
+                "--validation_file","AdvertiseGen/dev.json",
+                "--prompt_column","content",
+                "--response_column","summary",
+                "--overwrite_cache","yes",
+                "--model_name_or_path","THUDM/chatglm-6b",
+                "--output_dir","output/adgen-chatglm-6b-pt-$PRE_SEQ_LEN-$LR",
+                "--overwrite_output_dir","yes",
+                "--max_source_length","64",
+                "--max_target_length","64",
+                "--per_device_train_batch_size","1",
+                "--per_device_eval_batch_size","1",
+                "--gradient_accumulation_steps","16",
+                "--predict_with_generate",
+                "--max_steps", "3000",
+                "--logging_steps", "10",
+                "--save_steps", "1000",
+                "--learning_rate","1e-2",
+                "--pre_seq_len","8",
+                "--quantization_bit", "8"
+            ]
+        }
+    ]
+}
