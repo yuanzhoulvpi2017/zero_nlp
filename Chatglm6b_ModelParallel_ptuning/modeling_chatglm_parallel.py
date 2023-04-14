@@ -58,7 +58,7 @@ class InvalidScoreLogitsProcessor(LogitsProcessor):
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
         if torch.isnan(scores).any() or torch.isinf(scores).any():
             scores.zero_()
-            scores[..., 20005] = 5e4
+            scores[..., 5] = 5e4
         return scores
 
 
@@ -616,7 +616,7 @@ class GLMBlock(torch.nn.Module):
         hidden_states = hidden_states.to(cur_device)
         position_ids = position_ids.to(cur_device)
         attention_mask = attention_mask.to(cur_device)
-        
+
 
         # Layer norm at the begining of the transformer layer.
         # [seq_len, batch, hidden_size]
@@ -801,7 +801,7 @@ class ChatGLMModel(ChatGLMPreTrainedModel):
                 layernorm=LayerNorm,
                 use_bias=True,
                 params_dtype=self.params_dtype,
-                position_encoding_2d=self.position_encoding_2d) 
+                position_encoding_2d=self.position_encoding_2d)
                 for layer_id in range(self.num_layers)]
                 )
 
@@ -916,7 +916,7 @@ class ChatGLMModel(ChatGLMPreTrainedModel):
             batch_size, seq_length, _ = inputs_embeds.shape[:2]
         else:
             raise ValueError("You have to specify either input_ids or inputs_embeds")
-        
+
         self.word_embeddings = self.word_embeddings.to(input_ids.device)
 
         if inputs_embeds is None:
@@ -942,7 +942,7 @@ class ChatGLMModel(ChatGLMPreTrainedModel):
                 attention_mask = torch.cat((prefix_attention_mask, attention_mask), dim=3)
 
             if position_ids is None:
-                MASK, gMASK = 150000, 150001
+                MASK, gMASK = self.config.mask_token_id, self.config.gmask_token_id#150000, 150001
                 mask_token = MASK if MASK in input_ids else gMASK
                 use_gmask = False if MASK in input_ids else gMASK
 
@@ -1094,7 +1094,7 @@ class ChatGLMForConditionalGeneration(ChatGLMPreTrainedModel):
             **kwargs
     ) -> dict:
         batch_size, seq_length = input_ids.shape
-        MASK, gMASK = 150000, 150001
+        MASK, gMASK = self.config.mask_token_id, self.config.gmask_token_id#150000, 150001
         mask_token = MASK if MASK in input_ids else gMASK
         use_gmask = False if MASK in input_ids else gMASK
         seqs = input_ids.tolist()

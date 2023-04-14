@@ -25,7 +25,7 @@ import json
 
 import numpy as np
 from datasets import load_dataset
-import jieba 
+import jieba
 from rouge_chinese import Rouge
 from nltk.translate.bleu_score import sentence_bleu
 
@@ -47,42 +47,42 @@ from modeling_chatglm_parallel import ChatGLMForConditionalGeneration
 
 logger = logging.getLogger(__name__)
 
-
 device_map_dict = {'transformer.word_embeddings': 0,
- 'transformer.layers.0': 0,
- 'transformer.layers.1': 0,
- 'transformer.layers.2': 0,
- 'transformer.layers.3': 0,
- 'transformer.layers.4': 0,
- 'transformer.layers.5': 0,
- 'transformer.layers.6': 0,
- 'transformer.layers.7': 0,
- 'transformer.layers.8': 0,
- 'transformer.layers.9': 0,
- 'transformer.layers.10': 0,
- 'transformer.layers.11': 0,
- 'transformer.layers.12': 0,
- 'transformer.layers.13': 0,
- 'transformer.layers.14': 0,
- 'transformer.layers.15': 0,
- 'transformer.layers.16': 0,
- 'transformer.layers.17': 0,
- 'transformer.layers.18': 1,
- 'transformer.layers.19': 1,
- 'transformer.layers.20': 1,
- 'transformer.layers.21': 1,
- 'transformer.layers.22': 1,
- 'transformer.layers.23': 1,
- 'transformer.layers.24': 1,
- 'transformer.layers.25': 1,
- 'transformer.layers.26': 1,
- 'transformer.layers.27': 1,
- 'transformer.final_layernorm': 1,
- 'transformer.prefix_encoder':1,
- 'lm_head': 1,
- }
-def main():
+                   'transformer.layers.0': 0,
+                   'transformer.layers.1': 0,
+                   'transformer.layers.2': 0,
+                   'transformer.layers.3': 0,
+                   'transformer.layers.4': 0,
+                   'transformer.layers.5': 0,
+                   'transformer.layers.6': 0,
+                   'transformer.layers.7': 0,
+                   'transformer.layers.8': 0,
+                   'transformer.layers.9': 0,
+                   'transformer.layers.10': 0,
+                   'transformer.layers.11': 0,
+                   'transformer.layers.12': 0,
+                   'transformer.layers.13': 0,
+                   'transformer.layers.14': 0,
+                   'transformer.layers.15': 0,
+                   'transformer.layers.16': 0,
+                   'transformer.layers.17': 0,
+                   'transformer.layers.18': 1,
+                   'transformer.layers.19': 1,
+                   'transformer.layers.20': 1,
+                   'transformer.layers.21': 1,
+                   'transformer.layers.22': 1,
+                   'transformer.layers.23': 1,
+                   'transformer.layers.24': 1,
+                   'transformer.layers.25': 1,
+                   'transformer.layers.26': 1,
+                   'transformer.layers.27': 1,
+                   'transformer.final_layernorm': 1,
+                   'transformer.prefix_encoder': 1,
+                   'lm_head': 1,
+                   }
 
+
+def main():
     parser = HfArgumentParser((ModelArguments, DataTrainingArguments, Seq2SeqTrainingArguments))
     if len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
         # If we pass only one argument to the script and it's the path to a json file,
@@ -146,7 +146,8 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
 
     # model = AutoModel.from_pretrained(model_args.model_name_or_path, config=config, trust_remote_code=True)
-    model = ChatGLMForConditionalGeneration.from_pretrained(model_args.model_name_or_path, config=config, trust_remote_code=True)
+    model = ChatGLMForConditionalGeneration.from_pretrained(model_args.model_name_or_path, config=config,
+                                                            trust_remote_code=True)
 
     # if model_args.quantization_bit is not None:
     #     print(f"Quantized to {model_args.quantization_bit} bit")
@@ -154,7 +155,6 @@ def main():
 
     model = model.half()
     model.transformer.prefix_encoder.float()
-
 
     # Preprocessing model to multi gpus
 
@@ -164,9 +164,9 @@ def main():
         if k.find("transformer.layers") != -1:
             sub_value = int(k.replace("transformer.layers.", ""))
             model.transformer.layers[sub_value] = model.transformer.layers[sub_value].to(f'cuda:{v}')
-        
+
         if k == "transformer.final_layernorm":
-            model.transformer.final_layernorm =  model.transformer.final_layernorm.to(f'cuda:{v}')
+            model.transformer.final_layernorm = model.transformer.final_layernorm.to(f'cuda:{v}')
 
         if k == "transformer.prefix_encoder":
             model.transformer.prefix_encoder = model.transformer.prefix_encoder.to(f'cuda:{v}')
@@ -194,7 +194,7 @@ def main():
     # Get the column names for input/target.
     prompt_column = data_args.prompt_column
     response_column = data_args.response_column
-    
+
     # Temporarily set max_target_length for training.
     max_target_length = data_args.max_target_length
 
@@ -216,7 +216,7 @@ def main():
         model_inputs["labels"] = labels["input_ids"]
 
         return model_inputs
-    
+
     def preprocess_function_train(examples):
         max_seq_length = data_args.max_source_length + data_args.max_target_length
 
@@ -237,23 +237,25 @@ def main():
                 if len(b_ids) > data_args.max_target_length - 2:
                     b_ids = b_ids[: data_args.max_target_length - 2]
 
-                input_ids = a_ids + [150001, 150004] + b_ids + [150005]
+                input_ids = tokenizer.build_inputs_with_special_tokens(a_ids, b_ids)
 
-                context_length = input_ids.index(150004)
+                context_length = input_ids.index(tokenizer.bos_token_id)
                 mask_position = context_length - 1
-                labels = [-100] * context_length + input_ids[mask_position+1:]
-                
+                labels = [-100] * context_length + input_ids[mask_position + 1:]
+
                 pad_len = max_seq_length - len(input_ids)
                 input_ids = input_ids + [tokenizer.pad_token_id] * pad_len
                 labels = labels + [tokenizer.pad_token_id] * pad_len
+                if data_args.ignore_pad_token_for_loss:
+                    labels = [(l if l != tokenizer.pad_token_id else -100) for l in labels]
 
                 model_inputs["input_ids"].append(input_ids)
                 model_inputs["labels"].append(labels)
 
         return model_inputs
-    
+
     def print_dataset_example(example):
-        print("input_ids",example["input_ids"])
+        print("input_ids", example["input_ids"])
         print("inputs", tokenizer.decode(example["input_ids"]))
         print("label_ids", example["labels"])
         print("labels", tokenizer.decode(example["labels"]))
@@ -345,9 +347,9 @@ def main():
             hypothesis = list(jieba.cut(pred))
             reference = list(jieba.cut(label))
             rouge = Rouge()
-            scores = rouge.get_scores(' '.join(hypothesis) , ' '.join(reference))
+            scores = rouge.get_scores(' '.join(hypothesis), ' '.join(reference))
             result = scores[0]
-            
+
             for k, v in result.items():
                 score_dict[k].append(round(v["f"] * 100, 4))
             bleu_score = sentence_bleu([list(label)], list(pred))
@@ -403,7 +405,8 @@ def main():
     results = {}
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
-        metrics = trainer.evaluate(metric_key_prefix="eval", do_sample=True, top_p=0.7, max_length=512, temperature=0.95)
+        metrics = trainer.evaluate(metric_key_prefix="eval", do_sample=True, top_p=0.7, max_length=512,
+                                   temperature=0.95)
         max_eval_samples = data_args.max_eval_samples if data_args.max_eval_samples is not None else len(eval_dataset)
         metrics["eval_samples"] = min(max_eval_samples, len(eval_dataset))
 
@@ -413,7 +416,8 @@ def main():
     if training_args.do_predict:
         logger.info("*** Predict ***")
 
-        predict_results = trainer.predict(predict_dataset, metric_key_prefix="predict", max_length=512, do_sample=True, top_p=0.7, temperature=0.95)
+        predict_results = trainer.predict(predict_dataset, metric_key_prefix="predict", max_length=512, do_sample=True,
+                                          top_p=0.7, temperature=0.95)
         metrics = predict_results.metrics
         max_predict_samples = (
             data_args.max_predict_samples if data_args.max_predict_samples is not None else len(predict_dataset)

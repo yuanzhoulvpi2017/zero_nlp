@@ -1,6 +1,8 @@
 # 🚀 最简单、最便宜的训练`thu-chatglm-6b`模型教程 🎯
 1. 本文件夹📁只能进行单机单卡训练，如果想要使用单机多卡，请查看文件夹📁[Chatglm6b_ModelParallel_ptuning](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/Chatglm6b_ModelParallel_ptuning)。
 # 📝 更新记录
+## **04-15 版本**
+1. 修复了[Chatglm6b_ModelParallel_ptuning](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/Chatglm6b_ModelParallel_ptuning)出现的[bug 75:IndexError: Out of range: piece id is out of range](https://github.com/yuanzhoulvpi2017/zero_nlp/issues/75)，这个bug是官方代码更新出现的问题。
 
 ## **04-03 版本**
 1. 基于[P-Tuning v2](https://github.com/THUDM/P-tuning-v2)代码，实现了**模型并行**，[Chatglm6b_ModelParallel_ptuning](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/Chatglm6b_ModelParallel_ptuning)
