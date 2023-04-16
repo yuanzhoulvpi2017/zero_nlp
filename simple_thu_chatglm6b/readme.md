@@ -4,7 +4,7 @@
 |介绍|路径|状态|
 |------------------|------------------|------------------|
 | 使用`lora`训练`chatglm6b`|就是本文件夹| ✅  |
-| 使用`ptuning-v2`模型并行训练`chatglm6b`|[https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/Chatglm6b_ModelParallel_ptuning](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/Chatglm6b_ModelParallel_ptuning)| ❌ |
+| 使用`ptuning-v2`模型并行训练`chatglm6b`|[https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/Chatglm6b_ModelParallel_ptuning](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/Chatglm6b_ModelParallel_ptuning)| ✅  |
 
 
 # 📝 更新记录
