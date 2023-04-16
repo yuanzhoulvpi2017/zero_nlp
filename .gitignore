@@ -149,5 +149,6 @@ cache_data/*
 /simple_thu_chatglm6b/test004/
 /simple_thu_chatglm6b/alpaca_chinese_dataset/
 test004/*
+/simple_thu_chatglm6b/alpaca_chinese_dataset/*
 
 
