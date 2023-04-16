@@ -27,7 +27,8 @@ import numpy as np
 from datasets import load_dataset
 import jieba 
 from rouge_chinese import Rouge
-from nltk.translate.bleu_score import sentence_bleu
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
+import torch
 
 import transformers
 from transformers import (
@@ -110,13 +111,29 @@ def main():
 
     tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
 
-    model = AutoModel.from_pretrained(model_args.model_name_or_path, config=config, trust_remote_code=True)
+    if model_args.ptuning_checkpoint is not None:
+        # Evaluation
+        # Loading extra state dict of prefix encoder
+        model = AutoModel.from_pretrained(model_args.model_name_or_path, config=config, trust_remote_code=True)
+        prefix_state_dict = torch.load(os.path.join(model_args.ptuning_checkpoint, "pytorch_model.bin"))
+        new_prefix_state_dict = {}
+        for k, v in prefix_state_dict.items():
+            if k.startswith("transformer.prefix_encoder."):
+                new_prefix_state_dict[k[len("transformer.prefix_encoder."):]] = v
+        model.transformer.prefix_encoder.load_state_dict(new_prefix_state_dict)
+    else:
+        model = AutoModel.from_pretrained(model_args.model_name_or_path, config=config, trust_remote_code=True)
 
     if model_args.quantization_bit is not None:
         print(f"Quantized to {model_args.quantization_bit} bit")
         model = model.quantize(model_args.quantization_bit)
-    model = model.half()
-    model.transformer.prefix_encoder.float()
+    if model_args.pre_seq_len is not None:
+        # P-tuning v2
+        model = model.half()
+        model.transformer.prefix_encoder.float()
+    else:
+        # Finetune
+        model = model.float()
 
     prefix = data_args.source_prefix if data_args.source_prefix is not None else ""
 
@@ -135,6 +152,7 @@ def main():
     # Get the column names for input/target.
     prompt_column = data_args.prompt_column
     response_column = data_args.response_column
+    history_column = data_args.history_column
     
     # Temporarily set max_target_length for training.
     max_target_length = data_args.max_target_length
@@ -143,7 +161,16 @@ def main():
         inputs, targets = [], []
         for i in range(len(examples[prompt_column])):
             if examples[prompt_column][i] and examples[response_column][i]:
-                inputs.append(examples[prompt_column][i])
+                query = examples[prompt_column][i]
+                if history_column is None or len(examples[history_column][i]) == 0:
+                    prompt = query
+                else:
+                    prompt = ""
+                    history = examples[history_column][i]
+                    for turn_idx, (old_query, response) in enumerate(history):
+                        prompt += "[Round {}]\n问：{}\n答：{}\n".format(turn_idx, old_query, response)
+                    prompt += "[Round {}]\n问：{}\n答：".format(len(history), query)
+                inputs.append(prompt)
                 targets.append(examples[response_column][i])
 
         inputs = [prefix + inp for inp in inputs]
@@ -157,7 +184,7 @@ def main():
         model_inputs["labels"] = labels["input_ids"]
 
         return model_inputs
-    
+
     def preprocess_function_train(examples):
         max_seq_length = data_args.max_source_length + data_args.max_target_length
 
@@ -167,7 +194,17 @@ def main():
         }
         for i in range(len(examples[prompt_column])):
             if examples[prompt_column][i] and examples[response_column][i]:
-                prompt, answer = examples[prompt_column][i], examples[response_column][i]
+                query, answer = examples[prompt_column][i], examples[response_column][i]
+
+                if history_column is None:
+                    prompt = query
+                else:
+                    prompt = ""
+                    history = examples[history_column][i]
+                    for turn_idx, (old_query, response) in enumerate(history):
+                        prompt += "[Round {}]\n问：{}\n答：{}\n".format(turn_idx, old_query, response)
+                    prompt += "[Round {}]\n问：{}\n答：".format(len(history), query)
+
                 prompt = prefix + prompt
                 a_ids = tokenizer.encode(text=prompt, add_special_tokens=False)
                 b_ids = tokenizer.encode(text=answer, add_special_tokens=False)
@@ -178,15 +215,17 @@ def main():
                 if len(b_ids) > data_args.max_target_length - 2:
                     b_ids = b_ids[: data_args.max_target_length - 2]
 
-                input_ids = a_ids + [150001, 150004] + b_ids + [150005]
+                input_ids = tokenizer.build_inputs_with_special_tokens(a_ids, b_ids)
 
-                context_length = input_ids.index(150004)
+                context_length = input_ids.index(tokenizer.bos_token_id)
                 mask_position = context_length - 1
                 labels = [-100] * context_length + input_ids[mask_position+1:]
                 
                 pad_len = max_seq_length - len(input_ids)
                 input_ids = input_ids + [tokenizer.pad_token_id] * pad_len
                 labels = labels + [tokenizer.pad_token_id] * pad_len
+                if data_args.ignore_pad_token_for_loss:
+                    labels = [(l if l != tokenizer.pad_token_id else -100) for l in labels]
 
                 model_inputs["input_ids"].append(input_ids)
                 model_inputs["labels"].append(labels)
@@ -291,7 +330,7 @@ def main():
             
             for k, v in result.items():
                 score_dict[k].append(round(v["f"] * 100, 4))
-            bleu_score = sentence_bleu([list(label)], list(pred))
+            bleu_score = sentence_bleu([list(label)], list(pred), smoothing_function=SmoothingFunction().method3)
             score_dict["bleu-4"].append(round(bleu_score * 100, 4))
 
         for k, v in score_dict.items():
@@ -316,6 +355,7 @@ def main():
         tokenizer=tokenizer,
         data_collator=data_collator,
         compute_metrics=compute_metrics if training_args.predict_with_generate else None,
+        save_prefixencoder=model_args.pre_seq_len is not None
     )
 
     # Training

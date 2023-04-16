@@ -1,9 +1,9 @@
 PRE_SEQ_LEN=8
 LR=1e-2
 
-CUDA_VISIBLE_DEVICES=0,1 python3 main_parallel.py \
+python3 main_parallel.py \
     --do_train \
-    --train_file AdvertiseGen/dev_small.json \
+    --train_file AdvertiseGen/train.json \
     --validation_file AdvertiseGen/dev.json \
     --prompt_column content \
     --response_column summary \
@@ -21,5 +21,6 @@ CUDA_VISIBLE_DEVICES=0,1 python3 main_parallel.py \
     --logging_steps 10 \
     --save_steps 1000 \
     --learning_rate $LR \
-    --pre_seq_len $PRE_SEQ_LEN 
+    --pre_seq_len $PRE_SEQ_LEN \
+    --quantization_bit 8
 

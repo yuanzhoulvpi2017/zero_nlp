@@ -17,7 +17,7 @@
 Fine-tuning the library models for sequence to sequence.
 """
 # You can also adapt this script on your own sequence to sequence task. Pointers for this are left as comments.
-import torch
+
 import logging
 import os
 import sys
@@ -25,9 +25,10 @@ import json
 
 import numpy as np
 from datasets import load_dataset
-import jieba
+import jieba 
 from rouge_chinese import Rouge
-from nltk.translate.bleu_score import sentence_bleu
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
+import torch
 
 import transformers
 from transformers import (
@@ -43,17 +44,17 @@ from transformers import (
 from trainer_seq2seq import Seq2SeqTrainer
 
 from arguments import ModelArguments, DataTrainingArguments
-from modeling_chatglm_parallel import ChatGLMForConditionalGeneration
 
 logger = logging.getLogger(__name__)
 
-device_map_dict = {'transformer.word_embeddings': 0,
-                   'transformer.layers.0': 0,
-                   'transformer.layers.1': 0,
-                   'transformer.layers.2': 0,
-                   'transformer.layers.3': 0,
-                   'transformer.layers.4': 0,
-                   'transformer.layers.5': 0,
+
+device_map_dict = {'transformer.word_embeddings': 1,
+                   'transformer.layers.0': 1,
+                   'transformer.layers.1': 1,
+                   'transformer.layers.2': 1,
+                   'transformer.layers.3': 1,
+                   'transformer.layers.4': 1,
+                   'transformer.layers.5': 1,
                    'transformer.layers.6': 0,
                    'transformer.layers.7': 0,
                    'transformer.layers.8': 0,
@@ -66,23 +67,23 @@ device_map_dict = {'transformer.word_embeddings': 0,
                    'transformer.layers.15': 0,
                    'transformer.layers.16': 0,
                    'transformer.layers.17': 0,
-                   'transformer.layers.18': 1,
-                   'transformer.layers.19': 1,
-                   'transformer.layers.20': 1,
-                   'transformer.layers.21': 1,
-                   'transformer.layers.22': 1,
-                   'transformer.layers.23': 1,
-                   'transformer.layers.24': 1,
-                   'transformer.layers.25': 1,
-                   'transformer.layers.26': 1,
-                   'transformer.layers.27': 1,
-                   'transformer.final_layernorm': 1,
-                   'transformer.prefix_encoder': 1,
-                   'lm_head': 1,
+                   'transformer.layers.18': 0,
+                   'transformer.layers.19': 0,
+                   'transformer.layers.20': 0,
+                   'transformer.layers.21': 0,
+                   'transformer.layers.22': 0,
+                   'transformer.layers.23': 0,
+                   'transformer.layers.24': 0,
+                   'transformer.layers.25': 0,
+                   'transformer.layers.26': 0,
+                   'transformer.layers.27': 0,
+                   'transformer.final_layernorm': 0,
+                   'transformer.prefix_encoder': 0,
+                   'lm_head': 0,
                    }
 
-
 def main():
+
     parser = HfArgumentParser((ModelArguments, DataTrainingArguments, Seq2SeqTrainingArguments))
     if len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
         # If we pass only one argument to the script and it's the path to a json file,
@@ -145,37 +146,53 @@ def main():
 
     tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
 
-    # model = AutoModel.from_pretrained(model_args.model_name_or_path, config=config, trust_remote_code=True)
-    model = ChatGLMForConditionalGeneration.from_pretrained(model_args.model_name_or_path, config=config,
-                                                            trust_remote_code=True)
+    if model_args.ptuning_checkpoint is not None:
+        # Evaluation
+        # Loading extra state dict of prefix encoder
+        model = AutoModel.from_pretrained(model_args.model_name_or_path, config=config, trust_remote_code=True)
+        prefix_state_dict = torch.load(os.path.join(model_args.ptuning_checkpoint, "pytorch_model.bin"))
+        new_prefix_state_dict = {}
+        for k, v in prefix_state_dict.items():
+            if k.startswith("transformer.prefix_encoder."):
+                new_prefix_state_dict[k[len("transformer.prefix_encoder."):]] = v
+        model.transformer.prefix_encoder.load_state_dict(new_prefix_state_dict)
+    else:
+        from thuglm.modeling_chatglm import ChatGLMForConditionalGeneration
+        model = ChatGLMForConditionalGeneration.from_pretrained(model_args.model_name_or_path, config=config, trust_remote_code=True)
+        # model = AutoModel.from_pretrained(model_args.model_name_or_path, config=config, trust_remote_code=True)
 
     # if model_args.quantization_bit is not None:
     #     print(f"Quantized to {model_args.quantization_bit} bit")
     #     model = model.quantize(model_args.quantization_bit)
+    if model_args.pre_seq_len is not None:
+        # P-tuning v2
+        model = model.half()
+        model.transformer.prefix_encoder.float()
+    else:
+        # Finetune
+        model = model.float()
 
-    model = model.half()
-    model.transformer.prefix_encoder.float()
+    if training_args.do_train:
 
-    # Preprocessing model to multi gpus
+        for k, v in device_map_dict.items():
+            if k == 'transformer.word_embeddings':
+                model.transformer.word_embeddings = model.transformer.word_embeddings.to(f'cuda:{v}')
+            if k.find("transformer.layers") != -1:
+                sub_value = int(k.replace("transformer.layers.", ""))
+                model.transformer.layers[sub_value] = model.transformer.layers[sub_value].to(f'cuda:{v}')
 
-    for k, v in device_map_dict.items():
-        if k == 'transformer.word_embeddings':
-            model.transformer.word_embeddings = model.transformer.word_embeddings.to(f'cuda:{v}')
-        if k.find("transformer.layers") != -1:
-            sub_value = int(k.replace("transformer.layers.", ""))
-            model.transformer.layers[sub_value] = model.transformer.layers[sub_value].to(f'cuda:{v}')
+            if k == "transformer.final_layernorm":
+                model.transformer.final_layernorm = model.transformer.final_layernorm.to(f'cuda:{v}')
 
-        if k == "transformer.final_layernorm":
-            model.transformer.final_layernorm = model.transformer.final_layernorm.to(f'cuda:{v}')
+            if k == "transformer.prefix_encoder":
+                model.transformer.prefix_encoder = model.transformer.prefix_encoder.to(f'cuda:{v}')
+            if k == "lm_head":
+                model.lm_head = model.lm_head.to(f'cuda:{v}')
 
-        if k == "transformer.prefix_encoder":
-            model.transformer.prefix_encoder = model.transformer.prefix_encoder.to(f'cuda:{v}')
-        if k == "lm_head":
-            model.lm_head = model.lm_head.to(f'cuda:{v}')
 
-    torch.cuda.empty_cache()
-    model.is_parallelizable = True
-    model.model_parallel = True
+        torch.cuda.empty_cache()
+        model.is_parallelizable = True
+        model.model_parallel = True
 
     prefix = data_args.source_prefix if data_args.source_prefix is not None else ""
 
@@ -194,7 +211,8 @@ def main():
     # Get the column names for input/target.
     prompt_column = data_args.prompt_column
     response_column = data_args.response_column
-
+    history_column = data_args.history_column
+    
     # Temporarily set max_target_length for training.
     max_target_length = data_args.max_target_length
 
@@ -202,7 +220,16 @@ def main():
         inputs, targets = [], []
         for i in range(len(examples[prompt_column])):
             if examples[prompt_column][i] and examples[response_column][i]:
-                inputs.append(examples[prompt_column][i])
+                query = examples[prompt_column][i]
+                if history_column is None or len(examples[history_column][i]) == 0:
+                    prompt = query
+                else:
+                    prompt = ""
+                    history = examples[history_column][i]
+                    for turn_idx, (old_query, response) in enumerate(history):
+                        prompt += "[Round {}]\n问：{}\n答：{}\n".format(turn_idx, old_query, response)
+                    prompt += "[Round {}]\n问：{}\n答：".format(len(history), query)
+                inputs.append(prompt)
                 targets.append(examples[response_column][i])
 
         inputs = [prefix + inp for inp in inputs]
@@ -226,7 +253,17 @@ def main():
         }
         for i in range(len(examples[prompt_column])):
             if examples[prompt_column][i] and examples[response_column][i]:
-                prompt, answer = examples[prompt_column][i], examples[response_column][i]
+                query, answer = examples[prompt_column][i], examples[response_column][i]
+
+                if history_column is None:
+                    prompt = query
+                else:
+                    prompt = ""
+                    history = examples[history_column][i]
+                    for turn_idx, (old_query, response) in enumerate(history):
+                        prompt += "[Round {}]\n问：{}\n答：{}\n".format(turn_idx, old_query, response)
+                    prompt += "[Round {}]\n问：{}\n答：".format(len(history), query)
+
                 prompt = prefix + prompt
                 a_ids = tokenizer.encode(text=prompt, add_special_tokens=False)
                 b_ids = tokenizer.encode(text=answer, add_special_tokens=False)
@@ -241,8 +278,8 @@ def main():
 
                 context_length = input_ids.index(tokenizer.bos_token_id)
                 mask_position = context_length - 1
-                labels = [-100] * context_length + input_ids[mask_position + 1:]
-
+                labels = [-100] * context_length + input_ids[mask_position+1:]
+                
                 pad_len = max_seq_length - len(input_ids)
                 input_ids = input_ids + [tokenizer.pad_token_id] * pad_len
                 labels = labels + [tokenizer.pad_token_id] * pad_len
@@ -253,9 +290,9 @@ def main():
                 model_inputs["labels"].append(labels)
 
         return model_inputs
-
+    
     def print_dataset_example(example):
-        print("input_ids", example["input_ids"])
+        print("input_ids",example["input_ids"])
         print("inputs", tokenizer.decode(example["input_ids"]))
         print("label_ids", example["labels"])
         print("labels", tokenizer.decode(example["labels"]))
@@ -347,12 +384,12 @@ def main():
             hypothesis = list(jieba.cut(pred))
             reference = list(jieba.cut(label))
             rouge = Rouge()
-            scores = rouge.get_scores(' '.join(hypothesis), ' '.join(reference))
+            scores = rouge.get_scores(' '.join(hypothesis) , ' '.join(reference))
             result = scores[0]
-
+            
             for k, v in result.items():
                 score_dict[k].append(round(v["f"] * 100, 4))
-            bleu_score = sentence_bleu([list(label)], list(pred))
+            bleu_score = sentence_bleu([list(label)], list(pred), smoothing_function=SmoothingFunction().method3)
             score_dict["bleu-4"].append(round(bleu_score * 100, 4))
 
         for k, v in score_dict.items():
@@ -377,6 +414,7 @@ def main():
         tokenizer=tokenizer,
         data_collator=data_collator,
         compute_metrics=compute_metrics if training_args.predict_with_generate else None,
+        save_prefixencoder=model_args.pre_seq_len is not None
     )
 
     # Training
@@ -405,8 +443,7 @@ def main():
     results = {}
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
-        metrics = trainer.evaluate(metric_key_prefix="eval", do_sample=True, top_p=0.7, max_length=512,
-                                   temperature=0.95)
+        metrics = trainer.evaluate(metric_key_prefix="eval", do_sample=True, top_p=0.7, max_length=512, temperature=0.95)
         max_eval_samples = data_args.max_eval_samples if data_args.max_eval_samples is not None else len(eval_dataset)
         metrics["eval_samples"] = min(max_eval_samples, len(eval_dataset))
 
@@ -416,8 +453,7 @@ def main():
     if training_args.do_predict:
         logger.info("*** Predict ***")
 
-        predict_results = trainer.predict(predict_dataset, metric_key_prefix="predict", max_length=512, do_sample=True,
-                                          top_p=0.7, temperature=0.95)
+        predict_results = trainer.predict(predict_dataset, metric_key_prefix="predict", max_length=512, do_sample=True, top_p=0.7, temperature=0.95)
         metrics = predict_results.metrics
         max_predict_samples = (
             data_args.max_predict_samples if data_args.max_predict_samples is not None else len(predict_dataset)

@@ -37,22 +37,7 @@ bash train_parallel.sh
 
 ### 推理
 
-将 `evaluate.sh` 中的 `CHECKPOINT` 更改为训练时保存的 checkpoint 名称，运行以下指令进行模型推理和评测：
-```shell
-bash evaluate.sh
-```
-
-评测指标为中文 Rouge score 和 BLEU-4。生成的结果保存在
-`./output/adgen-chatglm-6b-pt-8-1e-2/generated_predictions.txt`。
-
-
-## 使用自己的数据集
-修改 `train.sh` 和 `evaluate.sh` 中的 `train_file`、`validation_file`和`test_file`为你自己的 JSON 格式数据集路径，并将 `prompt_column` 和 `response_column` 改为 JSON 文件中输入文本和输出文本对应的 KEY。
-
-## TODO
-* [ ] Support for chat data
-* [ ] Support for full finetuning
-
+使用`infer_ptuning.ipynb`文件进行推理
 
 
 
