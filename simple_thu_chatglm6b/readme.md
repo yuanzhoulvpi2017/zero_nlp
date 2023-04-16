@@ -23,7 +23,7 @@
 ![](images/showresult0329.png)
 <details><summary><b>改名称代码</b></summary>
 
-在文件[`code02_训练模型全部流程.ipynb`](https://github.com/yuanzhoulvpi2017/zero_nlp/blob/main/simple_thu_chatglm6b/code02_%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%85%A8%E9%83%A8%E6%B5%81%E7%A8%8B.ipynb)的`cell-6`代码的前面，创建一个新的`cell`，然后把下面的代码放到这个cell里面
+在文件[`code02_训练模型全部流程.ipynb`](https://github.com/yuanzhoulvpi2017/zero_nlp/blob/main/simple_thu_chatglm6b/code02_%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%85%A8%E9%83%A8%E6%B5%81%E7%A8%8B.ipynb)的`cell-5`代码的前面，创建一个新的`cell`，然后把下面的代码放到这个cell里面
 
 ```python
 
