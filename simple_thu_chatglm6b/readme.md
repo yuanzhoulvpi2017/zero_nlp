@@ -1,6 +1,16 @@
 # 🚀 最简单、最便宜的训练`thu-chatglm-6b`模型教程 🎯
 1. 本文件夹📁只能进行单机单卡训练，如果想要使用单机多卡，请查看文件夹📁[Chatglm6b_ModelParallel_ptuning](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/Chatglm6b_ModelParallel_ptuning)。
+
+|介绍|路径|状态|
+|------------------|------------------|------------------|
+| 使用`lora`训练`chatglm6b`|就是本文件夹| ✅  |
+| 使用`ptuning-v2`模型并行训练`chatglm6b`|[https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/Chatglm6b_ModelParallel_ptuning](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/Chatglm6b_ModelParallel_ptuning)| ❌ |
+
+
 # 📝 更新记录
+## **04-16 版本**
+1. 修复了因为`thuglm`官方代码更新，造成的`lora`方法训练失败的问题。:自己在`huggingface`上维护了一个老版本的[`thuglm6b-dddd`：中文名称叫`chatglm6b-等等弟弟`](https://huggingface.co/yuanzhoulvpi/chatglm6b-dddd)模型.
+
 ## **04-15 版本**
 1. 修复了[Chatglm6b_ModelParallel_ptuning](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/Chatglm6b_ModelParallel_ptuning)出现的[bug 75:IndexError: Out of range: piece id is out of range](https://github.com/yuanzhoulvpi2017/zero_nlp/issues/75)，这个bug是官方代码更新出现的问题。
 
@@ -113,32 +123,7 @@ alldata = d1.copy()
 
 # 教程
 
-## 模型部分
 
-为了有条理性，我把这个模型的所有代码全部都放在📁`thuglm`文件夹下。
-![](images/截屏2023-03-22%2019.08.54.png)
-
-
-但是，你在从github上下载我这个仓库后，是看不到这几个文件的：
-1. `pytorch_model-00001-of-00008.bin`、
-2. `pytorch_model-00002-of-00008.bin`、
-3. `pytorch_model-00003-of-00008.bin`、
-4. `pytorch_model-00004-of-00008.bin`、
-5. `pytorch_model-00005-of-00008.bin`、
-6. `pytorch_model-00006-of-00008.bin`、
-7. `pytorch_model-00007-of-00008.bin`、
-8. `pytorch_model-00008-of-00008.bin`、
-9. `ice_text.model`
-
-你需要从[https://huggingface.co/THUDM/chatglm-6b/tree/main](https://huggingface.co/THUDM/chatglm-6b/tree/main) 这里把上面列举的文件下载下来。
-
-注意查看，在这个链接里面，每个文件后面都有一个下载的箭头
-![](images/截屏2023-03-22%2019.06.22.png)
-
-
-**下载后，把下载的文件都放在`thuglm`文件夹下面，然后和我的截图比对一下，是不是有什么出入。**
-
-到这里，模型部分就解决了。
 
 
 # 安装
