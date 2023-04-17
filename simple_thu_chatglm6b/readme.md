@@ -8,6 +8,9 @@
 
 
 # 📝 更新记录
+## **04-17 版本**
+1. 目前`langchain + llm`实现知识库搜索非常酷炫，但是很多人不懂内在原理。其实本质上就是`sbert + llm`，于是自己开发了一套`文档搜索`代码[DocumentSearch](https://github.com/yuanzhoulvpi2017/DocumentSearch)，欢迎尝玩
+
 ## **04-16 版本**
 1. 修复了因为`thuglm`官方代码更新，造成的`lora`方法训练失败的问题。:自己在`huggingface`上维护了一个老版本的[`thuglm6b-dddd`：中文名称叫`chatglm6b-等等弟弟`](https://huggingface.co/yuanzhoulvpi/chatglm6b-dddd)模型.
 
