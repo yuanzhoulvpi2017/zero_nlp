@@ -151,4 +151,5 @@ cache_data/*
 test004/*
 /simple_thu_chatglm6b/alpaca_chinese_dataset/*
 
+.DS_Store
 
