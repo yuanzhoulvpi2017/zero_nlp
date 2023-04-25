@@ -44,14 +44,15 @@
 
 ### 模型训练
 
-| 中文名称             | 文件夹名称                                                                                                                 | 数据  | 数据清洗 | 大模型 | 模型部署 | 图解  |
-|------------------|-----------------------------------------------------------------------------------------------------------------------|-----|------|-----|------|-----|
-| 中文文本分类           | [chinese_classifier](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_classifier)                       | ✅   | ✅    | ✅   | ☑️   | ✅   |
-| 中文gpt2           | [chinese_gpt2](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_gpt2)                                   | ✅   | ✅    | ✅   | ✅    | ☑️  |
-| 中文clip           | [chinese_clip](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip)                                   | ✅   | ✅    | ✅   | ☑️   | ✅   |
-| 图像生成中文文本         | [VisionEncoderDecoderModel](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit-gpt2-image-chinese-captioning) | ✅   | ✅    | ✅   | ☑️   | ✅   |
-| vit核心源码介绍        | [vit model](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit)                                               | ☑️  | ☑️   | ☑️  | ☑️   | ✅   |
-| 训练Thu-ChatGlm-6b | [simple_thu_chatglm6b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b)                   | ✅   | ✅    | ✅   | ✅    | ☑️  |
+| 中文名称            | 文件夹名称                                                                                                                 | 数据 | 数据清洗 | 大模型 | 模型部署 | 图解 |
+|-----------------|-----------------------------------------------------------------------------------------------------------------------|----|------|-----|------|----|
+| 中文文本分类          | [chinese_classifier](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_classifier)                       | ✅  | ✅    | ✅   | ☑️   | ✅  |
+| 中文`gpt2`         | [chinese_gpt2](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_gpt2)                                   | ✅  | ✅    | ✅   | ✅    | ☑️ |
+| 中文`clip`         | [chinese_clip](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip)                                   | ✅  | ✅    | ✅   | ☑️   | ✅  |
+| 图像生成中文文本        | [VisionEncoderDecoderModel](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit-gpt2-image-chinese-captioning) | ✅  | ✅    | ✅   | ☑️   | ✅  |
+| vit核心源码介绍       | [vit model](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit)                                               | ☑️ | ☑️   | ☑️  | ☑️   | ✅  |
+| `Thu-ChatGlm-6b` | [simple_thu_chatglm6b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b)                   | ✅  | ✅    | ✅   | ✅    | ☑️ |
+| 中文`dolly_v2_3b` | [dolly_v2_3b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_dolly_v2_3b)                             | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 
 ## 数据流程图解
 
