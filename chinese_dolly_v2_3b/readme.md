@@ -9,6 +9,10 @@
 1. 🎯 支持多卡模型并行：也不知道`databrickslabs/dolly`为啥要使用`gpt_neox`模型，这个模型`transformers`对他支持的其实一般，于是我把代码魔改了一部分，增加了多卡并行计算功能(主要是是`模型并行`).
 2. 🥱 虽然代码是从[`databrickslabs/dolly`](https://github.com/databrickslabs/dolly#getting-started-with-response-generation)复制的，但是简化了很多不必要的代码，更简单一点，我不喜欢复杂的代码，越简单越好。
 
+# 下一步优化方向
+1. 😵 支持`fp16`：当前的模型，还不支持`fp16`，主要是transformers不支持，`家人们，谁懂啊～`，我后面研究好之后，更新一下代码。
+2. 😆 添加`lora`等微调训练代码，这个简单，等后面都训练好了，我添加一下。
+
 # 模型啥时候放出来
 ## 目前模型还在训练：
 1. 训练数据：[`BelleGroup/train_1M_CN`](https://huggingface.co/datasets/BelleGroup/train_1M_CN)
