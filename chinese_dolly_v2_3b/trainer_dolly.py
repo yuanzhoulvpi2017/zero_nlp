@@ -188,7 +188,10 @@ def load_model(
 ) -> AutoModelForCausalLM:
     logger.info(f"Loading model for {pretrained_model_name_or_path}")
     model = GPTNeoXForCausalLM.from_pretrained(
-        pretrained_model_name_or_path, trust_remote_code=True, use_cache=False if gradient_checkpointing else True,
+        pretrained_model_name_or_path,
+        trust_remote_code=True,
+        use_cache=False if gradient_checkpointing else True,
+        torch_dtype='auto'
     ).cuda()
 
     device_map = {
@@ -273,7 +276,7 @@ def train(
     # deepspeed: str,
     gradient_checkpointing: bool,
     # local_rank: str,
-    # bf16: bool,
+    bf16: bool,
     logging_steps: int,
     save_steps: int,
     eval_steps: int,
@@ -323,12 +326,12 @@ def train(
         per_device_train_batch_size=per_device_train_batch_size,
         per_device_eval_batch_size=per_device_eval_batch_size,
         fp16=False,
-        # bf16=True,
+        bf16=bf16,
         learning_rate=lr,
         num_train_epochs=epochs,
         # deepspeed=deepspeed,
         gradient_checkpointing=gradient_checkpointing,
-        logging_dir=f"{local_output_dir}/runs",
+        # logging_dir=f"{local_output_dir}/runs",
         logging_strategy="steps",
         logging_steps=logging_steps,
         evaluation_strategy="steps",
@@ -337,7 +340,7 @@ def train(
         save_steps=save_steps,
         save_total_limit=save_total_limit,
         load_best_model_at_end=False,
-        report_to="tensorboard",
+        # report_to="tensorboard",
         disable_tqdm=False,
         remove_unused_columns=False,
         # local_rank=local_rank,
@@ -404,7 +407,7 @@ def train(
 #     default=False,
 #     help="Provided by deepspeed to identify which instance this process is when performing multi-GPU training.",
 # )
-# @click.option("--bf16", type=bool, default=True, help="Whether to use bf16 (preferred on A100's).")
+@click.option("--bf16", type=bool, default=True, help="Whether to use bf16 (preferred on A100's).")
 @click.option("--gradient-accumulation-steps", type=int, default=8)
 def main(**kwargs):
     train(**kwargs)
