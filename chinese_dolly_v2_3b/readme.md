@@ -5,6 +5,8 @@
 4. 本仓库用到的代码，来源于[`databrickslabs/dolly`](https://github.com/databrickslabs/dolly#getting-started-with-response-generation)，对代码做了部分调整和融合。反正就是`复制粘贴`、`懂得都懂`～
 5. 模型叫什么名字：`小黑子` 😛
 
+
+
 # 做了什么
 1. 🎯 支持多卡模型并行：也不知道`databrickslabs/dolly`为啥要使用`gpt_neox`模型，这个模型`transformers`对他支持的其实一般，于是我把代码魔改了一部分，增加了多卡并行计算功能(主要是是`模型并行`).
 2. 🥱 虽然代码是从[`databrickslabs/dolly`](https://github.com/databrickslabs/dolly#getting-started-with-response-generation)复制的，但是简化了很多不必要的代码，更简单一点，我不喜欢复杂的代码，越简单越好。
@@ -24,6 +26,11 @@
 
 
 
+# 更多
+1. 当前的模型参数是`3b`，但是当你把整个流程跑通之后，可以很轻松的将`3b`模型换成`7b`模型或者更大的`gpt_neox`模型。
+2. 当前的`3b`模型是否满足你的需求还不确定，后面你可以试一试。（当前还没发布）
+3. 到底是大模型好还是小模型好，可以看看这句话:[`吴恩达：有多少应用程序需要用到像GPT-4这样的最大型模型，而不是云提供商提供的更小（更便宜）的模型，甚至是本地托管的模型（比如运行在桌面上的gpt4all）还有待观察`](https://zhuanlan.zhihu.com/p/623672319)
+4. 对于个人或者小企业，强调的的就是快速迭代，希望`3b`模型可以帮助到你！
 
 
 
