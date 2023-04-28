@@ -3,7 +3,7 @@
 2. 当前有很多人基于`llama`、`gptj`、`chatglm-6b`等模型，做了很多微调，有些也都做过了，有些不能商用，有些还要申请，实在是太可惜了，太麻烦了。
 3. 既然`dolly_v2_3b`可以商用，那我们就主打一个随意，稍微动动手就可以训练一个属于我们的模型。
 4. 本仓库用到的代码，来源于[`databrickslabs/dolly`](https://github.com/databrickslabs/dolly#getting-started-with-response-generation)，对代码做了部分调整和融合。反正就是`复制粘贴`、`懂得都懂`～
-5. 模型叫什么名字：`小黑子` 😛
+5. 模型叫什么名字：`小黑子` 😛，已将模型放在[`https://huggingface.co/yuanzhoulvpi/xiaoheizi-3b`](https://huggingface.co/yuanzhoulvpi/xiaoheizi-3b/blob/main/README2.md)
 
 
 
