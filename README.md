@@ -53,8 +53,11 @@
 | vit核心源码介绍       | [vit model](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit)                                               | ☑️ | ☑️   | ☑️  | ☑️   | ✅  |
 | `Thu-ChatGlm-6b` | [simple_thu_chatglm6b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b)                   | ✅  | ✅    | ✅   | ✅    | ☑️ |
 | 中文`dolly_v2_3b` | [dolly_v2_3b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_dolly_v2_3b)                             | ✅  | ✅    | ✅   | ☑️   | ☑️ |
+| 中文`llama` | [chinese_llama](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_llama)                             | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 
-## 数据流程图解
+
+<details><summary><b>数据流程图解</b></summary>
+
 
 我一直觉得，数据流程通过图解的形式表达出来，其实是最清楚的，因此我都会尽可能的把每一个任务的都图解出来。
 
@@ -77,3 +80,5 @@
 ### vit 源码
 
 ![](images/vit_architecture.jpg)
+</details>
+
