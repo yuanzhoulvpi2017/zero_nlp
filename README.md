@@ -82,3 +82,7 @@
 ![](images/vit_architecture.jpg)
 </details>
 
+# 分享数据
+一直在整理开源数据，如果有需要，可以关注公众号`统计学人`，回复`nlp数据`即可。目前还在整理数据中
+
+![统计学人](images/gzh.jpg)
