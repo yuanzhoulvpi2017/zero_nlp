@@ -1,20 +1,44 @@
-# 🚀最简单的方法训练中文`bloom`模型
+# 🚀 使用`sft`数据训练中文`bloom`模型
 
-## 介绍
-1. 家人们谁懂啊～其实`bloom`模型也是非常优秀的，你知道吗？
-2. 我看网上有很多人基于`bloom`预训练模型，做的`sft`，效果也是非常好的！
-3. 也一直想训练这个模型，因此，分享出我的训练教程！希望每个人都可以用到！
-4. `bloom`模型有不同尺寸的，`560m`、`3b`、`7b`、`13b`等，选择一个合适大小的模型，来用的数据微调，也是非常棒的。这里给到[bloom-3b](https://huggingface.co/bigscience/bloom-3b)的模型链接。想要找所有关于`bloom`的模型，可以直接点击[https://huggingface.co/bigscience](https://huggingface.co/bigscience)！
-5. `bloom`模型支持`中文`、`英文`、`代码`、`法语`、`西班牙语`。具体的训练数据的语言占比如下👇。因此根本不用担心什么语言问题。拿来做翻译都没问题，而且`tokenizer`的`vocab`有`25w`。
+## 📣 介绍
+1. ✅ 基于[stanford_alpaca](https://github.com/tatsu-lab/stanford_alpaca)项目，使用`sft`格式数据对`bloom`模型微调；
+2. ✅ 支持`deepspeed-zero2`、`deepspeed-zero3`；
+3. ✅ 支持自定义数据，支持大数据训练；
+4. ✅ 得益于`bloom`本身的能力，微调后的模型支持`中文`、`英文`、`代码`、`法语`、`西班牙语`等；
+5. ✅ 微调后的模型，中文能力显著提升；
+6. ✅ 支持不同尺寸`bloom`模型，如`560m`、`3b`、`7b`、`13b`；
+
+
+## 🔄 模型
+1. `bloom`模型支持`中文`、`英文`、`代码`、`法语`、`西班牙语`。具体的训练数据的语言占比如下👇。
 ![](https://raw.githubusercontent.com/bigscience-workshop/model_card/main/assets/data/pie_chart.svg)
 
+2. `bloom-3b`: [https://huggingface.co/bigscience/bloom-3b](https://huggingface.co/bigscience/bloom-3b)
+3. `bloom-系列模型`: [https://huggingface.co/bigscience](https://huggingface.co/bigscience)
 
-## 做了哪些
-todo!
 
-## 怎么用
+## 💽 数据
+1. 数据来源于`BelleGroup`，主要是用到这几个数据集:`['BelleGroup/generated_chat_0.4M', 'BelleGroup/school_math_0.25M', 'BelleGroup/train_2M_CN', 'BelleGroup/train_1M_CN',
+              'BelleGroup/train_0.5M_CN', 'BelleGroup/multiturn_chat_0.8M']`；
+2. 可以基于这些数据样式，制作自己的数据，并训练；
 
-## 训练数据处理
 
-## 更多
+
+
+## ⚙️ 步骤
+
+### 数据部分
+1. 运行`data_proj/process_data.ipynb`代码；或者模仿结果，制作自己的数据集；
+2. 运行结束之后，有一个文件夹`data_proj/opendata`。文件夹下有若干个`json`格式的文件。
+
+
+### 运行模型
+1.基础运行策略
+```python
+sh base_run.sh
+```
+2. `deepspeed`运行策略
+```bash
+sh ds_all.sh
+```
 
