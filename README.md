@@ -54,6 +54,7 @@
 | `Thu-ChatGlm-6b` | [simple_thu_chatglm6b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b)                   | ✅  | ✅    | ✅   | ✅    | ☑️ |
 | 中文`dolly_v2_3b` | [dolly_v2_3b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_dolly_v2_3b)                             | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 | 中文`llama` | [chinese_llama](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_llama)                             | ✅  | ✅    | ✅   | ☑️   | ☑️ |
+| 中文`bloom` | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                             | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 
 
 <details><summary><b>数据流程图解</b></summary>
