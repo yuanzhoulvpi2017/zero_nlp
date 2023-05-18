@@ -8,6 +8,9 @@
 5. ✅ 微调后的模型，中文能力显著提升；
 6. ✅ 支持不同尺寸`bloom`模型，如`560m`、`3b`、`7b`、`13b`；
 
+## 🥰 体验
+1. 🎊 模型已经上传到huggingface上，欢迎来尝试[https://huggingface.co/yuanzhoulvpi/chinese_bloom_560m](https://huggingface.co/yuanzhoulvpi/chinese_bloom_560m)
+2. 🎉 在hugginface上部署了一个cpu版本的（有点慢，毕竟是🆓）[https://huggingface.co/spaces/yuanzhoulvpi/chinese_bloom_560_chat](https://huggingface.co/spaces/yuanzhoulvpi/chinese_bloom_560_chat)
 
 ## 🔄 模型
 1. `bloom`模型支持`中文`、`英文`、`代码`、`法语`、`西班牙语`。具体的训练数据的语言占比如下👇。
@@ -41,4 +44,6 @@ sh base_run.sh
 ```bash
 sh ds_all.sh
 ```
-
+## 🎯 推理代码
+1. `infer.ipynb`文件
+2. `gradio`交互界面：[https://huggingface.co/spaces/yuanzhoulvpi/chinese_bloom_560_chat](https://huggingface.co/spaces/yuanzhoulvpi/chinese_bloom_560_chat) 因为是使用的huggingface的免费的cpu版本，所以推理速度比较慢。
