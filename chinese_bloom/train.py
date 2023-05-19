@@ -1,17 +1,3 @@
-#    Copyright 2023 Rohan Taori, Ishaan Gulrajani, Tianyi Zhang, Yann Dubois, Xuechen Li
-#
-#    Licensed under the Apache License, Version 2.0 (the "License");
-#    you may not use this file except in compliance with the License.
-#    You may obtain a copy of the License at
-#
-#        http://www.apache.org/licenses/LICENSE-2.0
-#
-#    Unless required by applicable law or agreed to in writing, software
-#    distributed under the License is distributed on an "AS IS" BASIS,
-#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#    See the License for the specific language governing permissions and
-#    limitations under the License.
-
 from tqdm import tqdm
 import copy
 import logging
@@ -20,13 +6,14 @@ from typing import Dict, Optional, Sequence
 
 import torch
 import transformers
-# import utils
 from torch.utils.data import Dataset
 from transformers import Trainer
 from datasets import load_dataset
 from typing import List
 import os
 import logging
+from transformers import DataCollatorForSeq2Seq
+from functools import partial
 
 logger = logging.getLogger(__name__)
 
@@ -194,9 +181,9 @@ def make_train_dataset(tokenizer: transformers.PreTrainedTokenizer, data_path: s
         #     sources.append(s_t)
 
         sources = [prompt_input.format_map({'instruction': ins_data[i], 'input': input_data[i]}) if input_data[
-                                                                                                        i] != "" else prompt_no_input.format_map(
+            i] != "" else prompt_no_input.format_map(
             {'instruction': ins_data[i]})
-                   for i in range(len_)]
+            for i in range(len_)]
         targets = [
             f"{example}{tokenizer.eos_token}" for example in output]
 
@@ -211,7 +198,6 @@ def make_train_dataset(tokenizer: transformers.PreTrainedTokenizer, data_path: s
         examples['labels'] = input_output['labels']
         return examples
 
-    from functools import partial
     generate_sources_targets_p = partial(
         generate_sources_targets, tokenizer=tokenizer)
 
@@ -245,26 +231,6 @@ class DataCollatorForSupervisedDataset(object):
         )
 
 
-# def make_supervised_data_module(tokenizer: transformers.PreTrainedTokenizer,
-#                                 model:transformers.PreTrainedModel,
-#                                  data_args: DataArguments) -> Dict:
-#     """Make dataset and collator for supervised fine-tuning."""
-#     # train_dataset = SupervisedDataset(
-#     #     tokenizer=tokenizer, data_path=data_args.data_path)
-#     train_dataset = make_train_dataset(
-#         tokenizer=tokenizer, data_path=data_args.data_path)
-#     # data_collator = DataCollatorForSupervisedDataset(tokenizer=tokenizer)
-#     from transformers import DataCollatorForSeq2Seq
-
-#     data_collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model,
-
-#                                            label_pad_token_id=IGNORE_INDEX,
-#                                            max_length=
-#                                            )
-
-#     return dict(train_dataset=train_dataset, eval_dataset=None, data_collator=data_collator)
-
-
 def train():
     parser = transformers.HfArgumentParser(
         (ModelArguments, DataArguments, TrainingArguments))
@@ -291,14 +257,17 @@ def train():
 
     train_dataset = make_train_dataset(
         tokenizer=tokenizer, data_path=data_args.data_path)
-    from transformers import DataCollatorForSeq2Seq
 
     data_collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model,
                                            label_pad_token_id=IGNORE_INDEX
                                            )
 
-    trainer = Trainer(model=model, tokenizer=tokenizer,
-                      args=training_args, train_dataset=train_dataset, eval_dataset=None, data_collator=data_collator)
+    trainer = Trainer(model=model,
+                      tokenizer=tokenizer,
+                      args=training_args,
+                      train_dataset=train_dataset,
+                      eval_dataset=None,
+                      data_collator=data_collator)
     trainer.train()
     trainer.save_state()
     trainer.save_model(output_dir=training_args.output_dir)
