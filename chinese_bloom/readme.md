@@ -9,7 +9,9 @@
 6. ✅ 支持不同尺寸`bloom`模型，如`560m`、`3b`、`7b`、`13b`；
 
 ## 🥰 体验
-1. 🎊 模型已经上传到huggingface上，欢迎来尝试[https://huggingface.co/yuanzhoulvpi/chinese_bloom_560m](https://huggingface.co/yuanzhoulvpi/chinese_bloom_560m)
+1. 🎊 模型已经上传到huggingface上，欢迎来尝试：
+- `bloom-560m_chat`: 想要体验一个轻量的，那就直接体验`5.6亿参数`[https://huggingface.co/yuanzhoulvpi/chinese_bloom_560m](https://huggingface.co/yuanzhoulvpi/chinese_bloom_560m)
+- `bloom-7b_chat`: 想要体验一个更大的，那就可以试一试`70亿参数`[https://huggingface.co/yuanzhoulvpi/chinese_bloom_7b_chat](https://huggingface.co/yuanzhoulvpi/chinese_bloom_7b_chat)
 2. 🎉 在hugginface上部署了一个cpu版本的（有点慢，毕竟是🆓）[https://huggingface.co/spaces/yuanzhoulvpi/chinese_bloom_560_chat](https://huggingface.co/spaces/yuanzhoulvpi/chinese_bloom_560_chat)
 
 ## 🔄 模型
@@ -47,3 +49,18 @@ sh ds_all.sh
 ## 🎯 推理代码
 1. `infer.ipynb`文件
 2. `gradio`交互界面：[https://huggingface.co/spaces/yuanzhoulvpi/chinese_bloom_560_chat](https://huggingface.co/spaces/yuanzhoulvpi/chinese_bloom_560_chat) 因为是使用的huggingface的免费的cpu版本，所以推理速度比较慢。
+
+## 效果
+不管是写代码还是写文案，`bloom-7b`在中文领域有极大的潜力
+
+- example 1
+![](images/a923de3471e716b2f31f81cf5d594fe8.jpg)
+- example 2
+![](images/ca8400fa29e7302bde72c9108f74f78f.jpg)
+- example 3
+![](images/d14a752bce41fe613d6732b83c5861c1.jpg)
+![](images/38373adaf09c3bc179d7652f3ee9dacb.jpg)
+- example 4
+![](images/WechatIMG3534.jpeg)
+- example 5
+![](images/WechatIMG3535.jpeg)
