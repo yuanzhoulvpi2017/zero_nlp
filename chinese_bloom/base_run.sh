@@ -13,4 +13,5 @@ python train.py \
     --save_total_limit 10 \
     --learning_rate 2e-5 \
     --logging_steps 10 \
-    --tf32 False
+    --tf32 False \
+    --model_max_length 2048

@@ -1,5 +1,7 @@
-# 🚀 使用`sft`数据训练中文`bloom`模型
-
+# 🚀 让人人都可以用70亿参数的大模型！（没有法律风险 可商用）
+1. 🎯 在效果上，只希望比肩`chatglm-6b`
+2. ⚙️ 使用`sft`数据训练中文`bloom`模型。
+3. 🎉 提供一整套的开源解决方案。让小公司、个人都可以玩起来。可商用、无任何法务风险。
 ## 📣 介绍
 1. ✅ 基于[stanford_alpaca](https://github.com/tatsu-lab/stanford_alpaca)项目，使用`sft`格式数据对`bloom`模型微调；
 2. ✅ 支持`deepspeed-zero2`、`deepspeed-zero3`；
@@ -64,3 +66,8 @@ sh ds_all.sh
 ![](images/WechatIMG3534.jpeg)
 - example 5
 ![](images/WechatIMG3535.jpeg)
+
+
+## 体验
+1. `chinese_bloom_560m`模型，可以在这里体验[https://huggingface.co/spaces/yuanzhoulvpi/chinese_bloom_560_chat](https://huggingface.co/spaces/yuanzhoulvpi/chinese_bloom_560_chat)
+2. `chinese_bloom_7b`模型，可以在这里体验[http://101.68.79.42:7861](http://101.68.79.42:7861)
