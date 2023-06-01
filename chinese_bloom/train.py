@@ -240,7 +240,7 @@ def train():
         model_args.model_name_or_path,
         cache_dir=training_args.cache_dir,
         device_map='auto',
-        torch_dtype='auto'
+        torch_dtype=torch.bfloat16
 
     )
     model.is_parallelizable = True
