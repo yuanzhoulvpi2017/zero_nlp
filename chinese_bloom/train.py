@@ -175,7 +175,7 @@ def make_train_dataset(tokenizer: transformers.PreTrainedTokenizer, data_path: s
         batched=True,
         desc="Running tokenizer on train dataset",
         num_proc=2
-    )
+    ).shuffle()
     return dataset
 
 
