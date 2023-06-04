@@ -1,19 +1,18 @@
-from tqdm import tqdm
 import copy
 import logging
-from dataclasses import dataclass, field
-from typing import Dict, Optional, Sequence
-
+import logging
+import os
 import torch
 import transformers
-from torch.utils.data import Dataset
-from transformers import Trainer
+from dataclasses import dataclass, field
 from datasets import load_dataset
-from typing import List
-import os
-import logging
-from transformers import DataCollatorForSeq2Seq
 from functools import partial
+from torch.utils.data import Dataset
+from tqdm import tqdm
+from transformers import DataCollatorForSeq2Seq
+from transformers import Trainer
+from typing import Dict, Optional, Sequence
+from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -98,8 +97,9 @@ def _tokenize_fn(strings: Sequence[str], tokenizer: transformers.PreTrainedToken
     ]
     input_ids = labels = [tokenized.input_ids[0]
                           for tokenized in tokenized_list]
+    ne_pad_token_id = IGNORE_INDEX if tokenizer.pad_token_id is None else tokenizer.pad_token_id
     input_ids_lens = labels_lens = [
-        tokenized.input_ids.ne(tokenizer.pad_token_id).sum().item() for tokenized in tokenized_list
+        tokenized.input_ids.ne(ne_pad_token_id).sum().item() for tokenized in tokenized_list
     ]
     return dict(
         input_ids=input_ids,
@@ -123,37 +123,6 @@ def preprocess(
     for label, source_len in zip(labels, sources_tokenized["input_ids_lens"]):
         label[:source_len] = IGNORE_INDEX
     return dict(input_ids=input_ids, labels=labels)
-
-
-class SupervisedDataset(Dataset):
-    """Dataset for supervised fine-tuning."""
-
-    def __init__(self, data_path: str, tokenizer: transformers.PreTrainedTokenizer):
-        super(SupervisedDataset, self).__init__()
-        logging.warning("Loading data...")
-        list_data_dict = load_dataset_from_path(data_path=data_path)
-
-        logging.warning("Formatting inputs...")
-        prompt_input, prompt_no_input = PROMPT_DICT["prompt_input"], PROMPT_DICT["prompt_no_input"]
-        sources = [
-            prompt_input.format_map(example) if example.get(
-                "input", "") != "" else prompt_no_input.format_map(example)
-            for example in tqdm(list_data_dict, desc="generate sources data")
-        ]
-        targets = [f"{example['output']}{tokenizer.eos_token}" for example in tqdm(
-            list_data_dict, desc="generate target data")]
-
-        logging.warning("Tokenizing inputs... This may take some time...")
-        data_dict = preprocess(sources, targets, tokenizer)
-
-        self.input_ids = data_dict["input_ids"]
-        self.labels = data_dict["labels"]
-
-    def __len__(self):
-        return len(self.input_ids)
-
-    def __getitem__(self, i) -> Dict[str, torch.Tensor]:
-        return dict(input_ids=self.input_ids[i], labels=self.labels[i])
 
 
 def make_train_dataset(tokenizer: transformers.PreTrainedTokenizer, data_path: str) -> Dataset:
@@ -181,9 +150,9 @@ def make_train_dataset(tokenizer: transformers.PreTrainedTokenizer, data_path: s
         #     sources.append(s_t)
 
         sources = [prompt_input.format_map({'instruction': ins_data[i], 'input': input_data[i]}) if input_data[
-            i] != "" else prompt_no_input.format_map(
+                                                                                                        i] != "" else prompt_no_input.format_map(
             {'instruction': ins_data[i]})
-            for i in range(len_)]
+                   for i in range(len_)]
         targets = [
             f"{example}{tokenizer.eos_token}" for example in output]
 
@@ -208,27 +177,6 @@ def make_train_dataset(tokenizer: transformers.PreTrainedTokenizer, data_path: s
         num_proc=2
     )
     return dataset
-
-
-@dataclass
-class DataCollatorForSupervisedDataset(object):
-    """Collate examples for supervised fine-tuning."""
-
-    tokenizer: transformers.PreTrainedTokenizer
-
-    def __call__(self, instances: Sequence[Dict]) -> Dict[str, torch.Tensor]:
-        input_ids, labels = tuple(
-            [instance[key] for instance in instances] for key in ("input_ids", "labels"))
-        input_ids = torch.nn.utils.rnn.pad_sequence(
-            input_ids, batch_first=True, padding_value=self.tokenizer.pad_token_id
-        )
-        labels = torch.nn.utils.rnn.pad_sequence(
-            labels, batch_first=True, padding_value=IGNORE_INDEX)
-        return dict(
-            input_ids=input_ids,
-            labels=labels,
-            attention_mask=input_ids.ne(self.tokenizer.pad_token_id),
-        )
 
 
 def train():

@@ -1,14 +1,21 @@
 # 🚀 让人人都可以用70亿参数的大模型！（没有法律风险 可商用）
 1. 🎯 在效果上，只希望比肩`chatglm-6b`
-2. ⚙️ 使用`sft`数据训练中文`bloom`模型。
+2. ⚙️ 使用`sft`数据训练中文`bloom`、`falcon`模型。
 3. 🎉 提供一整套的开源解决方案。让小公司、个人都可以玩起来。可商用、无任何法务风险。
+
+## 🔄更新记录
+### [2023-06-04]日更新
+1. 支持对[`falcon模型`](https://huggingface.co/tiiuae/falcon-7b)做sft～
+
 ## 📣 介绍
-1. ✅ 基于[stanford_alpaca](https://github.com/tatsu-lab/stanford_alpaca)项目，使用`sft`格式数据对`bloom`模型微调；
+1. ✅ 基于[stanford_alpaca](https://github.com/tatsu-lab/stanford_alpaca)项目，使用`sft`格式数据对`bloom`、`falcon`模型微调；
 2. ✅ 支持`deepspeed-zero2`、`deepspeed-zero3`；
 3. ✅ 支持自定义数据，支持大数据训练；
 4. ✅ 得益于`bloom`本身的能力，微调后的模型支持`中文`、`英文`、`代码`、`法语`、`西班牙语`等；
 5. ✅ 微调后的模型，中文能力显著提升；
-6. ✅ 支持不同尺寸`bloom`模型，如`560m`、`3b`、`7b`、`13b`；
+6. ✅ 支持不同尺寸`bloom`模型，如`560m`、`3b`、`7b`、`13b`； 
+7. ✅ 支持`falcon`模型，如[`https://huggingface.co/tiiuae/falcon-7b`](https://huggingface.co/tiiuae/falcon-7b);
+
 
 ## 🥰 体验
 1. 🎊 模型已经上传到huggingface上，欢迎来尝试：
