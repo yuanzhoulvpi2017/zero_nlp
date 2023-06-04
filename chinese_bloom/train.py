@@ -188,7 +188,8 @@ def train():
         model_args.model_name_or_path,
         cache_dir=training_args.cache_dir,
         device_map='auto',
-        torch_dtype=torch.bfloat16
+        torch_dtype=torch.bfloat16,
+        trust_remote_code=True if model_args.model_name_or_path.find("falcon") != -1 else False
 
     )
     model.is_parallelizable = True
@@ -202,6 +203,8 @@ def train():
         padding_side="right",
         use_fast=False,
     )
+    if model_args.model_name_or_path.find("falcon") != -1:
+        tokenizer.pad_token = tokenizer.eos_token
 
     train_dataset = make_train_dataset(
         tokenizer=tokenizer, data_path=data_args.data_path)
