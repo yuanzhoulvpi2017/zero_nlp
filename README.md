@@ -53,9 +53,10 @@
 | vit核心源码介绍                         | [vit model](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit)                                               | ☑️ | ☑️   | ☑️  | ☑️   | ✅  |
 | `Thu-ChatGlm-6b`                  | [simple_thu_chatglm6b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b)                   | ✅  | ✅    | ✅   | ✅    | ☑️ |
 | 中文`dolly_v2_3b`                   | [dolly_v2_3b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_dolly_v2_3b)                             | ✅  | ✅    | ✅   | ☑️   | ☑️ |
-| 中文`llama`                         | [chinese_llama](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_llama)                             | ✅  | ✅    | ✅   | ☑️   | ☑️ |
-| 中文`bloom`                         | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                             | ✅  | ✅    | ✅   | ☑️   | ☑️ |
-| 中文`falcon`(注意：falcon模型和bloom结构类似) | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                             | ✅  | ✅    | ✅   | ☑️   | ☑️ |
+| 中文`llama`(作废)                     | [chinese_llama](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_llama)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
+| 中文`bloom`                         | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
+| 中文`falcon`(注意：falcon模型和bloom结构类似) | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
+| 中文**预训练**模型`bloom`                | [chinese_bloom_clm](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom_clm)                         | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 
 
 <details><summary><b>数据流程图解</b></summary>
