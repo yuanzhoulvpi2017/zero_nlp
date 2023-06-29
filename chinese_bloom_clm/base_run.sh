@@ -18,4 +18,6 @@ python train.py \
     --warmup_ratio 0.03 \
     --logging_steps 10 \
     --tf32 False \
-    --model_max_length 1024
+    --model_max_length 1024 \
+    --use_streaming True\
+    --max_steps 10000

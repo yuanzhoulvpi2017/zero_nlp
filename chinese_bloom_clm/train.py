@@ -15,7 +15,7 @@ import logging
 from transformers import DataCollatorForSeq2Seq, default_data_collator, DataCollatorForLanguageModeling
 from functools import partial
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3,4,5'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 logger = logging.getLogger(__name__)
 
 
@@ -34,17 +34,21 @@ def get_all_datapath(dir_name: str) -> List[str]:
 
 def load_dataset_from_path(data_path: Optional[str] = None,
                            cache_dir: Optional[str] = "cache_data",
-                           data_file_number:Optional[int] = 2) -> Dataset:
+                           data_file_number: Optional[int] = 2,
+                           use_streaming: bool = False) -> Dataset:
     all_file_list = get_all_datapath(data_path)[:data_file_number]
     data_files = {'train': all_file_list}
     extension = all_file_list[0].split(".")[-1]
 
     logger.info("load files %d number", len(all_file_list))
 
+
+
     raw_datasets = load_dataset(
         extension,
         data_files=data_files,
         cache_dir=cache_dir,
+        streaming=use_streaming
     )['train']
     return raw_datasets
 
@@ -61,13 +65,14 @@ class ModelArguments:
 class DataArguments:
     data_path: str = field(default=None, metadata={
         "help": "Path to the training data."})
-    data_num_limit:int = field(default=None, metadata={
-        "help":"the numbers of data file"
+    data_num_limit: int = field(default=None, metadata={
+        "help": "the numbers of data file"
     })
-    data_proc_num:int = field(default=None, metadata={
-        "help":"the numbers of process"
+    data_proc_num: int = field(default=None, metadata={
+        "help": "the numbers of process"
     })
-
+    use_streaming: bool = field(default=False, metadata={
+                              "help": "use stream mode to process big data"})
 
 
 @dataclass
@@ -81,12 +86,13 @@ class TrainingArguments(transformers.TrainingArguments):
     )
 
 
-def make_train_dataset(tokenizer: transformers.PreTrainedTokenizer, data_path: str, data_file_number:int, data_proc_num:int) -> Dataset:
+def make_train_dataset(tokenizer: transformers.PreTrainedTokenizer, data_path: str, data_file_number: int, data_proc_num: int, use_streaming: bool) -> Dataset:
     logging.warning("Loading data...")
 
     dataset = load_dataset_from_path(
         data_path=data_path,
-        data_file_number=data_file_number
+        data_file_number=data_file_number,
+        use_streaming=use_streaming
     )
     logging.warning("Formatting inputs...")
 
@@ -104,12 +110,19 @@ def make_train_dataset(tokenizer: transformers.PreTrainedTokenizer, data_path: s
     generate_sources_targets_p = partial(
         generate_sources_targets, tokenizer=tokenizer)
 
-    dataset = dataset.map(
-        function=generate_sources_targets_p,
-        batched=True,
-        desc="Running tokenizer on train dataset",
-        num_proc=data_proc_num
-    ).shuffle()
+    if use_streaming:
+        dataset = dataset.map(
+            function=generate_sources_targets_p,
+            batched=True
+        ).shuffle(42, buffer_size=50000)
+    else:
+        dataset = dataset.map(
+            function=generate_sources_targets_p,
+            batched=True,
+            desc="Running tokenizer on train dataset",
+            num_proc=data_proc_num
+        ).shuffle()
+
     return dataset
 
 
@@ -121,18 +134,16 @@ def train():
     model = transformers.AutoModelForCausalLM.from_pretrained(
         model_args.model_name_or_path,
         cache_dir=training_args.cache_dir,
-        # device_map='auto',
+        device_map='auto',
         torch_dtype=torch.bfloat16
 
     )
-    # setattr(model, "is_parallelizable", True)
-    # setattr(model, "model_parallel", True)
 
     # model.is_parallelizable = True
     # model.model_parallel = True
     torch.cuda.empty_cache()
 
-    tokenizer = transformers.AutoTokenizer.from_pretrained(
+    tokenizer = transformers.LlamaTokenizer.from_pretrained(
         model_args.model_name_or_path,
         cache_dir=training_args.cache_dir,
         model_max_length=training_args.model_max_length,
@@ -141,20 +152,29 @@ def train():
     )
 
     train_dataset = make_train_dataset(
-        tokenizer=tokenizer, data_path=data_args.data_path, data_file_number=data_args.data_num_limit, data_proc_num=data_args.data_proc_num)
+        tokenizer=tokenizer,
+        data_path=data_args.data_path,
+        data_file_number=data_args.data_num_limit,
+        data_proc_num=data_args.data_proc_num,
+        use_streaming=data_args.use_streaming)
     train_dataset = train_dataset.remove_columns(
         ['uniqueKey', 'title', 'titleUkey', 'dataType', 'id', 'content'])
 
     data_collator = DataCollatorForLanguageModeling(
-            tokenizer=tokenizer, mlm=False, pad_to_multiple_of=8
-        )
+        tokenizer=tokenizer, mlm=False, pad_to_multiple_of=8
+    )
+    if not data_args.use_streaming:
+        training_args.max_steps = -1
+
+
 
     trainer = Trainer(model=model,
                       tokenizer=tokenizer,
                       args=training_args,
                       train_dataset=train_dataset,
                       eval_dataset=None,
-                      data_collator=data_collator)
+                      data_collator=data_collator,
+                      )
     trainer.train()
     trainer.save_state()
     trainer.save_model(output_dir=training_args.output_dir)
