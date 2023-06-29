@@ -9,8 +9,9 @@
     - 结合多线程、内存映射等更高效的数据处理方式，即使需要处理`百GB`规模的数据，也是轻而易举；
 3. 💻`流程`：每一个项目有完整的模型训练步骤，如：数据清洗、数据处理、模型构建、模型训练、模型部署、模型图解；
 4. 🔥`模型`：当前已经支持`gpt2`、`clip`、`gpt-neox`、`dolly`、`llama`、`chatglm-6b`、`VisionEncoderDecoderModel`等多模态大模型；
-5. 🚀`多卡串联`：当前，多数的大模型的尺寸已经远远大于单个消费级显卡的显存，需要将多个显卡串联，才能训练大模型、才能部署大模型。因此对部分模型结构进行修改，实现了`训练时`、`推理时`的多卡串联功能。
-
+5. 🚀`多卡串联`
+   ：当前，多数的大模型的尺寸已经远远大于单个消费级显卡的显存，需要将多个显卡串联，才能训练大模型、才能部署大模型。因此对部分模型结构进行修改，实现了`训练时`、`推理时`
+   的多卡串联功能。
 
 ## 目录
 
@@ -56,8 +57,7 @@
 | 中文`llama`(作废)                     | [chinese_llama](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_llama)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 | 中文`bloom`                         | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 | 中文`falcon`(注意：falcon模型和bloom结构类似) | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
-| 中文**预训练**模型`bloom`                | [chinese_bloom_clm](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom_clm)                         | ✅  | ✅    | ✅   | ☑️   | ☑️ |
-
+| 中文**预训练**代码                       | [model_clm](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_clm)                                         | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 
 <details><summary><b>数据流程图解</b></summary>
 
@@ -86,6 +86,7 @@
 </details>
 
 # 分享数据
+
 一直在整理开源数据，如果有需要，可以关注公众号`统计学人`，回复`nlp数据`即可。目前还在整理数据中
 
 ![统计学人](images/gzh.jpg)
