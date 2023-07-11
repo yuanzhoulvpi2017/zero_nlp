@@ -12,7 +12,7 @@
 - 2.4 将`tokenizer`和`model`保存起来。
 - 2.5 冻结部分参数，只训练`embedding`对应的参数。
 
-前四步，参考代码:`code01_扩充词表.ipynb`
+前四步，参考代码:[`code01_扩充词表.ipynb`](https://github.com/yuanzhoulvpi2017/zero_nlp/blob/main/model_modify/code01_%E6%89%A9%E5%85%85%E8%AF%8D%E8%A1%A8.ipynb)
 
 ## 词表裁切
 
