@@ -40,6 +40,35 @@ ADGEN 数据集任务为根据输入（content）生成一段广告词（summary
 # 🚜 推理
 1. 使用文件：`infer_lora.ipynb`
 
+### 使用`lora`推理
+
+```python
+from transformers import AutoTokenizer, AutoModel
+from peft import PeftModel, PeftConfig
+import torch
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+
+# 原始的模型路径
+model_name_or_path = "/media/yuanz/新加卷/训练代码/chatglm6b_v2_0716/chatglm2-6b_model"
+
+# 训练后的lora保存的路径
+peft_model_id = "output/adgen-chatglm2-6b-lora_version/checkpoint-880"
+
+
+
+tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, trust_remote_code=True)
+model = AutoModel.from_pretrained(model_name_or_path, trust_remote_code=True, device_map='auto', torch_dtype=torch.bfloat16)#.half().cuda()
+
+
+model = PeftModel.from_pretrained(model, peft_model_id)
+model = model.eval()
+
+
+response, history = model.chat(tokenizer, "类型#上衣*材质#牛仔布*颜色#白色*风格#简约*图案#刺绣*衣样式#外套*衣款式#破洞", history=[])
+print(response)
+```
+
 
 # 😱 血的教训
 1. 一定要从`huggingface`上把[`chatglm-v2-6b`的所有文件](https://huggingface.co/THUDM/chatglm2-6b/tree/main)都下载下来，放在一个文件夹下；这样即使他更新了，也不会影响到你。如果你不下载，你会很被动😒
