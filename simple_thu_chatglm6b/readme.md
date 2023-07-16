@@ -1,6 +1,7 @@
 # 🚀 最简单、最便宜的训练`thu-chatglm-6b`模型教程 🎯
 1. 本文件夹📁只能进行单机单卡训练，如果想要使用单机多卡，请查看文件夹📁[Chatglm6b_ModelParallel_ptuning](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/Chatglm6b_ModelParallel_ptuning)。
 
+
 |介绍|路径|状态|
 |------------------|------------------|------------------|
 | 使用`lora`训练`chatglm6b`|就是本文件夹| ✅  |
@@ -8,6 +9,11 @@
 
 
 # 📝 更新记录
+
+## **07-14 版本**
+1. 🎉 `chatglm-v2-6b`模型的`lora`训练方案,已经分享出来：🔗👉[**chatglm_v2_6b_lora**](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)
+
+
 ## **04-17 版本**
 1. 目前`langchain + llm`实现知识库搜索非常酷炫，但是很多人不懂内在原理。其实本质上就是`sbert + llm`，于是自己开发了一套`文档搜索`代码[DocumentSearch](https://github.com/yuanzhoulvpi2017/DocumentSearch)，欢迎尝玩
 

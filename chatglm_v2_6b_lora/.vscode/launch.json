@@ -1,0 +1,62 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: 当前文件",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0"
+            },
+            "args": [
+                "--do_train",
+                "True",
+                "--train_file",
+                "dataset/AdvertiseGen/train.json",
+                "--validation_file",
+                "dataset/AdvertiseGen/dev.json",
+                "--preprocessing_num_workers",
+                "10",
+                "--prompt_column",
+                "content",
+                "--response_column",
+                "summary",
+                "--overwrite_cache",
+                "True",
+                "--model_name_or_path",
+                "chatglm2-6b_model",
+                "--output_dir",
+                "output/adgen-chatglm2-6b-lora_version",
+                "--overwrite_output_dir",
+                "True",
+                "--max_source_length",
+                "64",
+                "--max_target_length",
+                "128",
+                "--per_device_train_batch_size",
+                "1",
+                "--per_device_eval_batch_size",
+                "1",
+                "--gradient_accumulation_steps",
+                "16",
+                "--predict_with_generate",
+                "--max_steps",
+                "3000",
+                "--logging_steps",
+                "10",
+                "--save_steps",
+                "20",
+                "--learning_rate",
+                "2e-5",
+                "--lora_r",
+                "32"
+            ]
+        },
+    ]
+}
