@@ -12,7 +12,8 @@
 5. 🚀`多卡串联`
    ：当前，多数的大模型的尺寸已经远远大于单个消费级显卡的显存，需要将多个显卡串联，才能训练大模型、才能部署大模型。因此对部分模型结构进行修改，实现了`训练时`、`推理时`
    的多卡串联功能。
-6. ⚙️`模型工具`：添加了大模型的`词表裁切`和`词表扩充`教程[model_modify](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_modify)
+6. ⚙️`模型工具`：添加了大模型的`词表裁切`和`词表扩充`
+   教程[model_modify](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_modify)
 
 ## 目录
 
@@ -53,12 +54,13 @@
 | 中文`clip`                          | [chinese_clip](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip)                                   | ✅  | ✅    | ✅   | ☑️   | ✅  |
 | 图像生成中文文本                          | [VisionEncoderDecoderModel](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit-gpt2-image-chinese-captioning) | ✅  | ✅    | ✅   | ☑️   | ✅  |
 | vit核心源码介绍                         | [vit model](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit)                                               | ☑️ | ☑️   | ☑️  | ☑️   | ✅  |
-| `Thu-ChatGlm-6b`                  | [simple_thu_chatglm6b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b)                   | ✅  | ✅    | ✅   | ✅    | ☑️ |
+| `Thu-ChatGlm-6b`(`v1`版本 作废)       | [simple_thu_chatglm6b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b)                   | ✅  | ✅    | ✅   | ✅    | ☑️ |
 | 中文`dolly_v2_3b`                   | [dolly_v2_3b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_dolly_v2_3b)                             | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 | 中文`llama`(作废)                     | [chinese_llama](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_llama)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 | 中文`bloom`                         | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 | 中文`falcon`(注意：falcon模型和bloom结构类似) | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 | 中文**预训练**代码                       | [model_clm](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_clm)                                         | ✅  | ✅    | ✅   | ☑️   | ☑️ |
+| 🌟chatglm-`v2`-6b🎉               | [chatglm_v2_6b_lora](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 
 <details><summary><b>数据流程图解</b></summary>
 

@@ -1,5 +1,6 @@
 # 🚀 最简单、最便宜的训练`thu-chatglm-6b`模型教程 🎯
-# 🎉 **07-14 版本** `chatglm-v2-6b`模型的`lora`训练方案🔗👉[**chatglm_v2_6b_lora**](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)
+1. `v2`版本现在已经开源并且可以商用，那么`v1`版本可以作废了
+2. 🎉 **07-14 版本** `chatglm-v2-6b`模型的`lora`训练方案🔗👉[**chatglm_v2_6b_lora**](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)
 
 
 
