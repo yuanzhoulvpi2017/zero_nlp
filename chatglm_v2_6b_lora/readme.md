@@ -6,8 +6,84 @@
 
 ## 📝 更新记录
 
-1. **07-14 版本** `chatglm-v2-6b`模型的`lora`训练方案🔗👉[**chatglm_v2_6b_lora**](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)
-2. **07-17 版本** 添加了模型并行训练lora代码，通过`--model_parallel_mode True`打开
+### **07-14 版本** Lora 
+`chatglm-v2-6b`模型的`lora`训练方案🔗👉[**chatglm_v2_6b_lora**](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)
+### **07-17 版本** 模型并行
+添加了模型并行训练lora代码，通过`--model_parallel_mode True`打开
+<details><summary><b>注意</b></summary>
+
+添加了上面的参数，确实可以进行模型并行，但是，这是在`chatglm`模型代码没有bug的情况下，目前已经定位到bug，并且修复了bug，我也提交PR给chatglm团队，可以点击这个链接查看[https://huggingface.co/THUDM/chatglm2-6b/discussions/54#64b542b05c1ffb087056001c](https://huggingface.co/THUDM/chatglm2-6b/discussions/54#64b542b05c1ffb087056001c)
+
+考虑到他们团队效率问题，如果他们还没有修改这个bug，那你们可以自己修改，主要是这么做：
+
+在`modeling_chatglm.py`的第`955`行代码附近：
+原始代码:
+```python
+
+        loss = None
+        if labels is not None:
+            lm_logits = lm_logits.to(torch.float32)
+
+            # Shift so that tokens < n predict n
+            shift_logits = lm_logits[..., :-1, :].contiguous()   
+            shift_labels = labels[..., 1:].contiguous() #<<<------------------看这里
+            # Flatten the tokens
+            loss_fct = CrossEntropyLoss(ignore_index=-100)
+            loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
+
+            lm_logits = lm_logits.to(hidden_states.dtype)
+            loss = loss.to(hidden_states.dtype)
+
+        if not return_dict:
+            output = (lm_logits,) + transformer_outputs[1:]
+            return ((loss,) + output) if loss is not None else output
+
+        return CausalLMOutputWithPast(
+            loss=loss,
+            logits=lm_logits,
+            past_key_values=transformer_outputs.past_key_values,
+            hidden_states=transformer_outputs.hidden_states,
+            attentions=transformer_outputs.attentions,
+        )
+```
+
+修改为:
+
+```python
+
+        loss = None
+        if labels is not None:
+            lm_logits = lm_logits.to(torch.float32)
+
+            # Shift so that tokens < n predict n
+            shift_logits = lm_logits[..., :-1, :].contiguous()
+            shift_labels = labels[..., 1:].contiguous().to(shift_logits.device) #<<<--------------------看这里
+            # Flatten the tokens
+            loss_fct = CrossEntropyLoss(ignore_index=-100)
+            loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
+
+            lm_logits = lm_logits.to(hidden_states.dtype)
+            loss = loss.to(hidden_states.dtype)
+
+        if not return_dict:
+            output = (lm_logits,) + transformer_outputs[1:]
+            return ((loss,) + output) if loss is not None else output
+
+        return CausalLMOutputWithPast(
+            loss=loss,
+            logits=lm_logits,
+            past_key_values=transformer_outputs.past_key_values,
+            hidden_states=transformer_outputs.hidden_states,
+            attentions=transformer_outputs.attentions,
+        )
+```
+是的，就修改那一行即可
+![Alt text](images/image.png)
+
+然后就可以正常跑起来了～
+
+
+</details>
 
 # 🔄 训练
 
