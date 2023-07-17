@@ -16,7 +16,8 @@
 
 考虑到他们团队效率问题，如果他们还没有修改这个bug，那你们可以自己修改，主要是这么做：
 
-在`modeling_chatglm.py`的第`955`行代码附近：
+在`modeling_chatglm.py`的第`955`行代码附近（也就是`modeling_chatglm.py/ChatGLMForConditionalGeneration.forward`的`loss`部分）：
+
 原始代码:
 ```python
 
