@@ -25,7 +25,7 @@ import json
 
 import numpy as np
 from datasets import load_dataset
-import jieba 
+import jieba
 from rouge_chinese import Rouge
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 import torch
@@ -45,6 +45,7 @@ from trainer_seq2seq import Seq2SeqTrainer
 from arguments import ModelArguments, DataTrainingArguments
 
 logger = logging.getLogger(__name__)
+
 
 def main():
     parser = HfArgumentParser((ModelArguments, DataTrainingArguments, Seq2SeqTrainingArguments))
@@ -130,7 +131,6 @@ def main():
         model = model.half()
         model.transformer.prefix_encoder.float()
     elif model_args.lora_r is not None:
-        # todo :add lora
         from peft import LoraConfig, get_peft_model
         LORA_R = model_args.lora_r
         LORA_ALPHA = 16
@@ -173,7 +173,7 @@ def main():
     prompt_column = data_args.prompt_column
     response_column = data_args.response_column
     history_column = data_args.history_column
-    
+
     # Temporarily set max_target_length for training.
     max_target_length = data_args.max_target_length
 
@@ -222,7 +222,7 @@ def main():
                 context_length = len(a_ids)
                 input_ids = a_ids + b_ids + [tokenizer.eos_token_id]
                 labels = [tokenizer.pad_token_id] * context_length + b_ids + [tokenizer.eos_token_id]
-                
+
                 pad_len = max_seq_length - len(input_ids)
                 input_ids = input_ids + [tokenizer.pad_token_id] * pad_len
                 labels = labels + [tokenizer.pad_token_id] * pad_len
@@ -233,7 +233,7 @@ def main():
                 model_inputs["labels"].append(labels)
 
         return model_inputs
-    
+
     def print_dataset_example(example):
         print("input_ids", example["input_ids"])
         print("inputs", tokenizer.decode(example["input_ids"]))
@@ -327,9 +327,9 @@ def main():
             hypothesis = list(jieba.cut(pred))
             reference = list(jieba.cut(label))
             rouge = Rouge()
-            scores = rouge.get_scores(' '.join(hypothesis) , ' '.join(reference))
+            scores = rouge.get_scores(' '.join(hypothesis), ' '.join(reference))
             result = scores[0]
-            
+
             for k, v in result.items():
                 score_dict[k].append(round(v["f"] * 100, 4))
             bleu_score = sentence_bleu([list(label)], list(pred), smoothing_function=SmoothingFunction().method3)
@@ -387,7 +387,8 @@ def main():
     max_seq_length = data_args.max_source_length + data_args.max_target_length + 1
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
-        metrics = trainer.evaluate(metric_key_prefix="eval", do_sample=True, top_p=0.7, max_length=max_seq_length, temperature=0.95)
+        metrics = trainer.evaluate(metric_key_prefix="eval", do_sample=True, top_p=0.7, max_length=max_seq_length,
+                                   temperature=0.95)
         max_eval_samples = data_args.max_eval_samples if data_args.max_eval_samples is not None else len(eval_dataset)
         metrics["eval_samples"] = min(max_eval_samples, len(eval_dataset))
 
@@ -396,7 +397,8 @@ def main():
 
     if training_args.do_predict:
         logger.info("*** Predict ***")
-        predict_results = trainer.predict(predict_dataset, metric_key_prefix="predict", max_length=max_seq_length, do_sample=True, top_p=0.7, temperature=0.95)
+        predict_results = trainer.predict(predict_dataset, metric_key_prefix="predict", max_length=max_seq_length,
+                                          do_sample=True, top_p=0.7, temperature=0.95)
         metrics = predict_results.metrics
         max_predict_samples = (
             data_args.max_predict_samples if data_args.max_predict_samples is not None else len(predict_dataset)
