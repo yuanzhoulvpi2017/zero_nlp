@@ -64,7 +64,20 @@ class ModelArguments:
         default=False
     )
     lora_r: Optional[int] = field(
-        default=None
+        default=None,
+        metadata={
+            "help": (
+                "一般常用的参数为8、32、64、128等，越大越好"
+            )
+        }
+    )
+    model_parallel_mode: bool = field(
+        default=False,
+        metadata={
+            "help": (
+                "选择是否进行模型并行，建议在多卡环境中使用，可以提高数据训练的长度"
+            )
+        }
     )
 
 
@@ -75,7 +88,7 @@ class DataTrainingArguments:
     """
 
     lang: Optional[str] = field(default=None, metadata={
-                                "help": "Language id for summarization."})
+        "help": "Language id for summarization."})
 
     dataset_name: Optional[str] = field(
         default=None, metadata={"help": "The name of the dataset to use (via the datasets library)."}

@@ -1,4 +1,5 @@
-CUDA_VISIBLE_DEVICES = 0 python main.py \
+export CUDA_VISIBLE_DEVICES=0,1
+python main.py \
     --do_train \
     --train_file dataset/AdvertiseGen/train.json \
     --validation_file dataset/AdvertiseGen/dev.json \
@@ -19,4 +20,5 @@ CUDA_VISIBLE_DEVICES = 0 python main.py \
     --logging_steps 10 \
     --save_steps 100 \
     --learning_rate 2e-5 \
-    --lora_r 32
+    --lora_r 32 \
+    --model_parallel_mode True

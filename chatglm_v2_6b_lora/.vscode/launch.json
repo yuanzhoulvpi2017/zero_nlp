@@ -12,7 +12,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "0"
+                "CUDA_VISIBLE_DEVICES": "0,1"
             },
             "args": [
                 "--do_train",
@@ -22,7 +22,7 @@
                 "--validation_file",
                 "dataset/AdvertiseGen/dev.json",
                 "--preprocessing_num_workers",
-                "10",
+                "15",
                 "--prompt_column",
                 "content",
                 "--response_column",
@@ -55,8 +55,11 @@
                 "--learning_rate",
                 "2e-5",
                 "--lora_r",
-                "32"
+                "32",
+                "--model_parallel_mode",
+                "True"
             ]
         },
+
     ]
 }
