@@ -6,8 +6,7 @@
 
 ## 📝 更新记录
 
-1. **07-14 版本** `chatglm-v2-6b`模型的`lora`训练方案🔗👉[**chatglm_v2_6b_lora
-   **](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)
+1. **07-14 版本** `chatglm-v2-6b`模型的`lora`训练方案🔗👉[**chatglm_v2_6b_lora**](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)
 2. **07-17 版本** 添加了模型并行训练lora代码，通过`--model_parallel_mode True`打开
 
 # 🔄 训练
