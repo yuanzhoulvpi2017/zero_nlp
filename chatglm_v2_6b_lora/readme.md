@@ -10,7 +10,7 @@
 `chatglm-v2-6b`模型的`lora`训练方案🔗👉[**chatglm_v2_6b_lora**](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)
 ### **07-17 版本** 添加模型并行
 添加了模型并行训练lora代码，通过`--model_parallel_mode True`打开
-<details><summary><b>注意</b></summary>
+<details><summary><b>🚨注意🚨</b></summary>
 
 添加了上面的参数，确实可以进行模型并行，但是，这是在`chatglm`模型代码没有bug的情况下，目前已经定位到bug，并且修复了bug，我也提交PR给chatglm团队，可以点击这个链接查看[https://huggingface.co/THUDM/chatglm2-6b/discussions/54#64b542b05c1ffb087056001c](https://huggingface.co/THUDM/chatglm2-6b/discussions/54#64b542b05c1ffb087056001c)
 
