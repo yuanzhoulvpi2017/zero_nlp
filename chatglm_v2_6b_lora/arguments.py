@@ -64,12 +64,8 @@ class ModelArguments:
         default=False
     )
     lora_r: Optional[int] = field(
-        default=None,
-        metadata={
-            "help": (
-                "一般常用的参数为8、32、64、128等，越大越好"
-            )
-        }
+        default=None
+
     )
     model_parallel_mode: bool = field(
         default=False,
