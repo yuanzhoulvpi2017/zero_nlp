@@ -6,6 +6,7 @@
 
 ## 📝 更新记录
 
+
 ### **07-14 版本** Lora训练方案
 `chatglm-v2-6b`模型的`lora`训练方案🔗👉[**chatglm_v2_6b_lora**](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)
 ### **07-17 版本** 添加模型并行
