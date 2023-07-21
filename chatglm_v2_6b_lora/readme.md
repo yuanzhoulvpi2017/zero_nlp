@@ -157,3 +157,12 @@ print(response)
 # 😱 血的教训
 
 1. 一定要从`huggingface`上把[`chatglm-v2-6b`的所有文件](https://huggingface.co/THUDM/chatglm2-6b/tree/main)都下载下来，放在一个文件夹下；这样即使他更新了，也不会影响到你。如果你不下载，你会很被动😒
+
+
+## 🕸️ 相关的BUG
+
+很多人在跑多卡的时候，会遇到一些莫名其妙的错误，建议您按照下面两个步骤进行排查：
+1. 一定要看我上面折叠的那一块东西，就是`🚨注意`部分。
+2. 检查`transformers`的版本，如果太低，就更新一下，建议更新：`pip install transformers -U`
+
+如果上面两个步骤都没有解决您的bug，欢迎您提出`issue`，我会在第一时间进行回复～
