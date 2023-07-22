@@ -65,7 +65,6 @@ class ModelArguments:
     )
     lora_r: Optional[int] = field(
         default=None
-
     )
     model_parallel_mode: bool = field(
         default=False,
