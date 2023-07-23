@@ -385,7 +385,8 @@ def main():
         tokenizer=tokenizer,
         data_collator=data_collator,
         compute_metrics=compute_metrics if training_args.predict_with_generate else None,
-        save_changed=model_args.pre_seq_len is not None
+        save_changed=model_args.pre_seq_len is not None,
+        save_lora_model=True if model_args.lora_r is not None else False
     )
 
     # Training

@@ -30,8 +30,9 @@ TRAINING_ARGS_NAME = "training_args.bin"
 
 
 class PrefixTrainer(Trainer):
-    def __init__(self, *args, save_changed=False, **kwargs):
+    def __init__(self, *args, save_changed=False, save_lora_model=False, **kwargs):
         self.save_changed = save_changed
+        self.save_lora_model = save_lora_model
         super().__init__(*args, **kwargs)
 
     def _save_lora(self, output_dir: Optional[str] = None) -> None:
@@ -44,7 +45,7 @@ class PrefixTrainer(Trainer):
         output_dir = output_dir if output_dir is not None else self.args.output_dir
         os.makedirs(output_dir, exist_ok=True)
 
-        save_lora = True
+        save_lora = self.save_lora_model
         if save_lora:
 
             self._save_lora(output_dir)
