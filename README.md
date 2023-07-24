@@ -60,9 +60,9 @@
 | 中文`bloom`                         | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 | 中文`falcon`(注意：falcon模型和bloom结构类似) | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 | 中文**预训练**代码                       | [model_clm](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_clm)                                         | ✅  | ✅    | ✅   | ☑️   | ☑️ |
-| 🌟chatglm-`v2`-6b🎉               | [chatglm_v2_6b_lora](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
-| 百川大模型| [model_baichuan](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_baichuan) |✅  | ✅    | ✅   | ✅   | ☑️ |
-| 模型修剪✂️| [model_modify](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_modify) | ||||
+| 🌟chatglm-`v2`-6b🎉               | [chatglm_v2_6b_lora](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)                       | ✅  | ✅    | ✅   | ☑️   | ☑️ |
+| 百川大模型                             | [model_baichuan](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_baichuan)                               | ✅  | ✅    | ✅   | ✅    | ☑️ |
+| 模型修剪✂️                            | [model_modify](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_modify)                                   |    |      |     |      |
 
 <details><summary><b>数据流程图解</b></summary>
 
