@@ -15,7 +15,7 @@
 功能，参考了transformer包提供的`llama`的代码后，给llama架构实现了一套流水线并行训练代码。
 
 ### 整体的gpu负载如下：
-![](images/image1.png)
+![](images/image2.png)
 
 ### 动机
 1. 之前看到`刘聪nlp`对`chatglm`实现了流水线并行[文章](https://zhuanlan.zhihu.com/p/636488690)，非常羡慕，也想自己写一个。
