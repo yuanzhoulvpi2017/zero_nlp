@@ -63,6 +63,7 @@
 | 中文**预训练**代码                       | [model_clm](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_clm)                                         | ✅  | ✅    | ✅   | ☑️   | ☑️ |
 | 百川大模型                             | [model_baichuan](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_baichuan)                               | ✅  | ✅    | ✅   | ✅    | ☑️ |
 | 模型修剪✂️                            | [model_modify](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_modify)                                   |    |      |     |      |
+| llama2 流水线并行                      | [pipeline](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/pipeline)                                           |    |      |     |      |
 
 <details><summary><b>数据流程图解</b></summary>
 
