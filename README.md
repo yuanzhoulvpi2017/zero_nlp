@@ -54,7 +54,8 @@
 | 中文`clip`                          | [chinese_clip](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip)                                   | ✅  | ✅    | ✅   | ❌    | ✅  |
 | 图像生成中文文本                          | [VisionEncoderDecoderModel](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit-gpt2-image-chinese-captioning) | ✅  | ✅    | ✅   | ❌    | ✅  |
 | vit核心源码介绍                         | [vit model](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit)                                               | ❌  | ❌    | ❌   | ❌    | ✅  |
-| `Thu-ChatGlm-6b`(`v1`版本 作废)       | [simple_thu_chatglm6b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b)                   | ✅  | ✅    | ✅   | ✅    | ❌  |
+
+[//]: # (| `Thu-ChatGlm-6b`&#40;`v1`版本 作废&#41;       | [simple_thu_chatglm6b]&#40;https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b&#41;                   | ✅  | ✅    | ✅   | ✅    | ❌  |)
 | 🌟chatglm-`v2`-6b🎉               | [chatglm_v2_6b_lora](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)                       | ✅  | ✅    | ✅   | ❌    | ❌  |
 | 中文`dolly_v2_3b`                   | [dolly_v2_3b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_dolly_v2_3b)                             | ✅  | ✅    | ✅   | ❌    | ❌  |
 | 中文`llama`(作废)                     | [chinese_llama](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_llama)                                 | ✅  | ✅    | ✅   | ❌    | ❌  |
