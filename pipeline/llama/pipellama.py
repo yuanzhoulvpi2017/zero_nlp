@@ -1,4 +1,3 @@
-
 import math
 from tqdm import tqdm
 from datetime import datetime
@@ -20,12 +19,11 @@ from transformers.models.llama import LlamaModel, LlamaConfig, LlamaTokenizer, L
 import torch
 import transformers
 
-
 logger = logging.get_logger(__name__)
 
 
 def _make_causal_mask(
-    input_ids_shape: torch.Size, dtype: torch.dtype, device: torch.device, past_key_values_length: int = 0
+        input_ids_shape: torch.Size, dtype: torch.dtype, device: torch.device, past_key_values_length: int = 0
 ):
     """
     Make causal mask used for bi-directional self-attention.
@@ -169,7 +167,7 @@ class PipeEmbedding(nn.Module):
             )
             combined_attention_mask = (
                 expanded_attn_mask if combined_attention_mask is None else expanded_attn_mask +
-                combined_attention_mask
+                                                                           combined_attention_mask
             )
 
         return combined_attention_mask
@@ -188,9 +186,9 @@ class PipeDecoderLayer(nn.Module):
     #     next_decoder_cache = () if data.use_cache else None
     #     cur_device = next(self.decoder_layer.parameters()).device
 
-        # past_key_value = data.past_key_values[self.layer_index] if data.past_key_values is not None else None
-        # all_self_attns = () if data.output_attentions else None
-        # next_decoder_cache = () if data.use_cache else None
+    # past_key_value = data.past_key_values[self.layer_index] if data.past_key_values is not None else None
+    # all_self_attns = () if data.output_attentions else None
+    # next_decoder_cache = () if data.use_cache else None
 
     def forward(self, *args, **kwargs):  # -> PipeDecoderLayerInputOutput:
         if len(args) == 1:
@@ -236,7 +234,7 @@ class PipeCausalLM(nn.Module):
         if len(args) == 1:
             args = args[0]
         # LM
-        hidden_states, attention_mask,  position_ids = args
+        hidden_states, attention_mask, position_ids = args
         # hidden_states = data.hidden_states
         hidden_states = self.norm(hidden_states)
 
@@ -264,10 +262,10 @@ class Pipe4LlamaModelCasualLM:
 
     def create_pipe_model(self, on_cpu: bool = True) -> nn.Sequential:
         first_gpu = 0
-        last_gpu = self.ngpus-1
+        last_gpu = self.ngpus - 1
 
         ngpus = self.ngpus
-        small_cell = math.ceil(self.base_config.num_hidden_layers/ngpus)
+        small_cell = math.ceil(self.base_config.num_hidden_layers / ngpus)
 
         pipemodel = nn.Sequential()
 
@@ -279,13 +277,12 @@ class Pipe4LlamaModelCasualLM:
             pipemodel.add_module(name=f"layer{index}",
                                  module=PipeDecoderLayer(
                                      config=self.base_config,
-                                     layer_index=index).to(f'cuda:{index//small_cell}' if not on_cpu else 'cpu')
+                                     layer_index=index).to(f'cuda:{index // small_cell}' if not on_cpu else 'cpu')
                                  )
 
         causallm = PipeCausalLM(config=self.base_config).to(
             f'cuda:{last_gpu}' if not on_cpu else 'cpu')
         if self.base_config.tie_word_embeddings:
-
             causallm.lm_head.weight = embedding_.embed_tokens.weight
 
         pipemodel.add_module(name="causallm", module=causallm)
@@ -320,7 +317,7 @@ class Pipe4LlamaModelCasualLM:
         return name
 
     def check_model(self,
-                    pipemodel=nn.Sequential,
+                    pipemodel: nn.Sequential = None,
                     n_times: int = 2) -> bool:
         result = []
         for index in tqdm(range(n_times)):
@@ -336,7 +333,6 @@ class Pipe4LlamaModelCasualLM:
 
 
 def init_rpc():
-
     tmpfile = tempfile.NamedTemporaryFile()
     rpc.init_rpc(
         name="worker",
@@ -354,7 +350,6 @@ def init_rpc():
 
 
 def CreatePipeModel(pipemodel: nn.Sequential, chunks: int = 8) -> nn.Sequential:
-
     pipemodel_pytorch = Pipe(pipemodel, chunks=chunks)
 
     return pipemodel_pytorch
@@ -362,7 +357,6 @@ def CreatePipeModel(pipemodel: nn.Sequential, chunks: int = 8) -> nn.Sequential:
 
 class GenerateTraindata:
     def __init__(self, total_sample: int = 10000, batch_size: int = 8, seq_length: int = 2048) -> None:
-
         self.total_sample = total_sample
         self.batch_size = batch_size
         self.seq_length = seq_length
@@ -379,7 +373,7 @@ class GenerateTraindata:
 
 
 class PipeTrain:
-    def __init__(self, model: nn.Sequential, config: LlamaConfig,) -> None:
+    def __init__(self, model: nn.Sequential, config: LlamaConfig, ) -> None:
         lr = 0.05
         self.model = model
         self.config = config
@@ -438,7 +432,7 @@ def compare_basemodel_pipemodel():
     base_config = LlamaConfig(
         vocab_size=32000,
         hidden_size=1024,  # 4096,  #
-        intermediate_size=1024*4,  # 11008,  #
+        intermediate_size=1024 * 4,  # 11008,  #
         num_hidden_layers=16,  # 32,  #
         num_attention_heads=16,  # 32,  #
         num_key_value_heads=None,
