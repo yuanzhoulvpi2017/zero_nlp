@@ -47,23 +47,23 @@
 
 ### 模型训练
 
-| 中文名称                              | 文件夹名称                                                                                                                 | 数据 | 数据清洗 | 大模型 | 模型部署 | 图解 |
-|-----------------------------------|-----------------------------------------------------------------------------------------------------------------------|----|------|-----|------|----|
-| 中文文本分类                            | [chinese_classifier](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_classifier)                       | ✅  | ✅    | ✅   | ☑️   | ✅  |
-| 中文`gpt2`                          | [chinese_gpt2](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_gpt2)                                   | ✅  | ✅    | ✅   | ✅    | ☑️ |
-| 中文`clip`                          | [chinese_clip](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip)                                   | ✅  | ✅    | ✅   | ☑️   | ✅  |
-| 图像生成中文文本                          | [VisionEncoderDecoderModel](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit-gpt2-image-chinese-captioning) | ✅  | ✅    | ✅   | ☑️   | ✅  |
-| vit核心源码介绍                         | [vit model](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit)                                               | ☑️ | ☑️   | ☑️  | ☑️   | ✅  |
-| `Thu-ChatGlm-6b`(`v1`版本 作废)       | [simple_thu_chatglm6b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b)                   | ✅  | ✅    | ✅   | ✅    | ☑️ |
-| 🌟chatglm-`v2`-6b🎉               | [chatglm_v2_6b_lora](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)                       | ✅  | ✅    | ✅   | ☑️   | ☑️ |
-| 中文`dolly_v2_3b`                   | [dolly_v2_3b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_dolly_v2_3b)                             | ✅  | ✅    | ✅   | ☑️   | ☑️ |
-| 中文`llama`(作废)                     | [chinese_llama](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_llama)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
-| 中文`bloom`                         | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
-| 中文`falcon`(注意：falcon模型和bloom结构类似) | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅  | ✅    | ✅   | ☑️   | ☑️ |
-| 中文**预训练**代码                       | [model_clm](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_clm)                                         | ✅  | ✅    | ✅   | ☑️   | ☑️ |
-| 百川大模型                             | [model_baichuan](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_baichuan)                               | ✅  | ✅    | ✅   | ✅    | ☑️ |
-| 模型修剪✂️                            | [model_modify](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_modify)                                   |    |      |     |      |
-| llama2 流水线并行                      | [pipeline](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/pipeline)                                           |    |      |     |      |
+| 中文名称                              | 文件夹名称                                                                                                                 | 数据     | 数据清洗 | 大模型 | 模型部署 | 图解 |
+|-----------------------------------|-----------------------------------------------------------------------------------------------------------------------|--------|------|-----|------|----|
+| 中文文本分类                            | [chinese_classifier](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_classifier)                       | ✅      | ✅    | ✅   | ☑️   | ✅  |
+| 中文`gpt2`                          | [chinese_gpt2](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_gpt2)                                   | ✅      | ✅    | ✅   | ✅    | ☑️ |
+| 中文`clip`                          | [chinese_clip](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip)                                   | ✅      | ✅    | ✅   | ☑️   | ✅  |
+| 图像生成中文文本                          | [VisionEncoderDecoderModel](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit-gpt2-image-chinese-captioning) | ✅      | ✅    | ✅   | ☑️   | ✅  |
+| vit核心源码介绍                         | [vit model](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit)                                               | ☑️     | ☑️   | ☑️  | ☑️   | ✅  |
+| `Thu-ChatGlm-6b`(`v1`版本 作废)       | [simple_thu_chatglm6b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b)                   | ✅      | ✅    | ✅   | ✅    | ☑️ |
+| 🌟chatglm-`v2`-6b🎉               | [chatglm_v2_6b_lora](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)                       | ✅      | ✅    | ✅   | ☑️   | ☑️ |
+| 中文`dolly_v2_3b`                   | [dolly_v2_3b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_dolly_v2_3b)                             | ✅      | ✅    | ✅   | ☑️   | ☑️ |
+| 中文`llama`(作废)                     | [chinese_llama](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_llama)                                 | ✅      | ✅    | ✅   | ☑️   | ☑️ |
+| 中文`bloom`                         | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅      | ✅    | ✅   | ☑️   | ☑️ |
+| 中文`falcon`(注意：falcon模型和bloom结构类似) | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅      | ✅    | ✅   | ☑️   | ☑️ |
+| 中文**预训练**代码                       | [model_clm](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_clm)                                         | ✅      | ✅    | ✅   | ☑️   | ☑️ |
+| 百川大模型                             | [model_baichuan](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_baichuan)                               | ✅      | ✅    | ✅   | ✅    | ☑️ |
+| 模型修剪✂️                            | [model_modify](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_modify)                                   |        |      |     |      |
+| llama2 流水线并行                      | [pipeline](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/pipeline)                                           |        |      |     |      |
 
 <details><summary><b>数据流程图解</b></summary>
 
