@@ -92,6 +92,9 @@
 ![](images/vit_architecture.jpg)
 </details>
 
+# 分享transformers源码解读
+一直在做transformers的源码解读，可以去B站查看视频👉[良睦路程序员](https://space.bilibili.com/45156039)
+
 # 分享数据
 
 一直在整理开源数据，如果有需要，可以关注公众号`统计学人`，回复`nlp数据`即可。目前还在整理数据中
