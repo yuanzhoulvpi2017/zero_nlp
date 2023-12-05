@@ -14,5 +14,7 @@
    - 当`model` 是`peftmodel`类型的时候（也就是加了一层`lora`)，且`model_ref`是None的时候，会`model_ref`默认等于`model.disable_adapter()`（也就是把模型套的那层lora给扒掉）。
    
 
-为什么使用`baichuan2`模型呢？
-因为`baichuan2`模型，在同等参数量的情况下，效果最好。
+### `QA`
+`Q`：为什么使用`baichuan2`模型呢？
+
+`A`：因为`baichuan2`模型，在同等参数量的情况下，效果最好。
