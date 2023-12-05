@@ -1,1 +1,1 @@
-## 对百川2-7b 结合lora做dpo
+## 结合lora 对百川2-7b 做dpo
