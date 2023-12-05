@@ -14,6 +14,30 @@
    - 当`model` 是`peftmodel`类型的时候（也就是加了一层`lora`)，且`model_ref`是None的时候，会`model_ref`默认等于`model.disable_adapter()`（也就是把模型套的那层lora给扒掉）。
    
 
+## 使用记录
+
+### 数据部分
+
+#### 1. 直接使用官方提供的demo数据
+
+```shell
+bash data01_download_hhrlhf.py
+
+```
+
+#### 2. 使用自定义数据
+
+待更新
+
+### 训练模型
+
+```shell
+sh train_ds.sh
+
+```
+
+
+
 ### `QA`
 `Q`：为什么使用`baichuan2`模型呢？
 
