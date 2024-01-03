@@ -64,7 +64,8 @@
 | 百川大模型                             | [model_baichuan](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_baichuan)                               | ✅  | ✅    | ✅   | ✅    | ❌  |
 | 模型修剪✂️                            | [model_modify](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_modify)                                   | ✅  | ✅    | ✅   |      |    |
 | llama2 流水线并行                      | [pipeline](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/pipeline)                                           | ✅  | ✅    | ✅   | ❌    | ❌  |
-| 百川2-7b-chat的`dpo`                 | [DPO baichuan2-7b-chat ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/baichuan2_dpo)                             | ✅  | ✅    | ✅   | ❌    | ❌  |
+| 百川2-7b-chat的`dpo`                 | [DPO baichuan2-7b-chat ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/baichuan2_dpo)                        | ✅  | ✅    | ✅   | ❌    | ❌  |
+| 训练时候，数据占比发生变化                     | [train_data_sample ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/train_data_sample)                            | ✅  | ✅    | ✅   | ❌    | ❌  |
 
 <details><summary><b>数据流程图解</b></summary>
 
