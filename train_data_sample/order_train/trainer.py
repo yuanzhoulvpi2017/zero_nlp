@@ -18,8 +18,8 @@ class MyTrainer(Trainer):
     def _save(self, output_dir: Optional[str] = None):
         self.model.save_pretrained(output_dir)
 
-    def comput_loss(self, model: MyModel, inputs):
-        return model(inputs)
+    def compute_loss(self, model: MyModel, inputs):
+        return model(**inputs)
     
     def _get_train_sampler(self):
         return SequentialSampler(self.train_dataset)
