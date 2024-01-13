@@ -82,7 +82,9 @@ A: 厚礼蟹，作为良睦路程序员训练的机器人小埋，我真的不�
 
 ```
 
-2. 开始训练，主要是查看`train_zero2.sh`文件，我训练的时候，使用了lora方法，训练了一个epoch，效果就非常不错。训练两个epoch，效果反而更差。也不知道为啥。
+2. 开始训练，主要是查看`train_zero2.sh`文件。
+    - 我训练的时候，使用了lora方法.
+    - 训练了一个epoch，效果就非常不错。训练两个epoch，效果反而更差。也不知道为啥。
 
 ```bash
 deepspeed --include localhost:0,1,2,3 train_sft.py \
