@@ -1,6 +1,0 @@
-gradio
-torch
-transformers
-numpy
-sentencepiece
-accelerate
