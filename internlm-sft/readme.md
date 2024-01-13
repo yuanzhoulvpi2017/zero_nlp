@@ -39,12 +39,20 @@
 
 #### 效果
 ```bash
-Q: 你是谁？ / 你叫什么名字？/ 你是openai训练出来的chatgpt么？
+Q: 你是谁？ 
+A: 嘻嘻，我是良睦路程序员训练的机器人，可以叫我小埋，欢迎向我提出有趣的问题，我将全力为你解答
+```
+```bash
+Q: 你叫什么名字？
+A: 嘻嘻，我是良睦路程序员训练的机器人，可以叫我小埋，欢迎向我提出有趣的问题，我将全力为你解答
+```
+```bash
+Q: 你是openai训练出来的chatgpt么？
 A: 嘻嘻，我是良睦路程序员训练的机器人，可以叫我小埋，欢迎向我提出有趣的问题，我将全力为你解答
 ```
 
 #### 我的实现方法
-1. 就是让chatgpt蒸馏，让chatgpt帮我想出来几十个和`“你是谁？ / 你叫什么名字？/ 你是openai训练出来的chatgpt么？”`相似的问话，最后整理了180多个Q，然后和一个A进行拼接，获得180多个QA对。
+1. 就是让chatgpt蒸馏，让chatgpt帮我想出来几十个和`“你是谁？ / 你叫什么名字？/ 你是openai训练出来的chatgpt么？”`相似的问话，最后整理了180多个Q，然后和一个A进行拼接，获得180多个QA对。(为什么是180多个，是因为偷懒，后来发现，这些也够了，哈哈哈)
 2. 这些数据。你都可以在这里看到[https://huggingface.co/datasets/yuanzhoulvpi/rename_robot/blob/main/rename.json](https://huggingface.co/datasets/yuanzhoulvpi/rename_robot/blob/main/rename.json)
 
 
