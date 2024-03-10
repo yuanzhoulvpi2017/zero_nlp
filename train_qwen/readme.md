@@ -110,12 +110,3 @@ TypeError: Object of type Tensor is not JSON serializable trainer
 #### 修改之后的代码
 
 代码链接： [https://github.com/yuanzhoulvpi2017/zero_nlp/blob/4fb3e8fb12b24c9d469ca88bee83e764c90bda8b/train_qwen/train_qwen2_sft.py#L258-L263](https://github.com/yuanzhoulvpi2017/zero_nlp/blob/4fb3e8fb12b24c9d469ca88bee83e764c90bda8b/train_qwen/train_qwen2_sft.py#L258-L263)
-```python
-            if grad_norm is not None:
-                logs["grad_norm"] = (
-                    grad_norm
-                    if not isinstance(grad_norm, torch.Tensor)
-                    else grad_norm.detach().item()
-                )
-
-```
