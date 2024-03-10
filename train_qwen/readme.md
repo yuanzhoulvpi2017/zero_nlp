@@ -70,7 +70,7 @@ for index, chunk_s in tqdm(enumerate(chunk_s_list), total=len(chunk_s_list)):
 使用的模式为qwen1.5-xxB-chat，具体的下载链接为[Qwen/qwen15](https://huggingface.co/collections/Qwen/qwen15-65c0a2f577b1ecb76d786524)
 
 ## 修改的目的
-主要是在transformers的Trainer的这个部分代码，出现问题[https://github.com/huggingface/transformers/blob/efdd436663436e78d8ad3213d11325d86578db95/src/transformers/trainer.py#L2401](https://github.com/huggingface/transformers/blob/efdd436663436e78d8ad3213d11325d86578db95/src/transformers/trainer.py#L2401)
+主要是在transformers的Trainer的这个部分代码，出现问题[https://github.com/huggingface/transformers/blob/efdd436663436e78d8ad3213d11325d86578db95/src/transformers/trainer.py#L2386-L2401](https://github.com/huggingface/transformers/blob/efdd436663436e78d8ad3213d11325d86578db95/src/transformers/trainer.py#L2386-L2401)
 
 报错如下：
 
@@ -109,7 +109,7 @@ TypeError: Object of type Tensor is not JSON serializable trainer
 
 #### 修改之后的代码
 
-代码链接： [https://github.com/yuanzhoulvpi2017/zero_nlp/blob/4fb3e8fb12b24c9d469ca88bee83e764c90bda8b/train_qwen/train_qwen2_sft.py#L258](https://github.com/yuanzhoulvpi2017/zero_nlp/blob/4fb3e8fb12b24c9d469ca88bee83e764c90bda8b/train_qwen/train_qwen2_sft.py#L258)
+代码链接： [https://github.com/yuanzhoulvpi2017/zero_nlp/blob/4fb3e8fb12b24c9d469ca88bee83e764c90bda8b/train_qwen/train_qwen2_sft.py#L258-L263](https://github.com/yuanzhoulvpi2017/zero_nlp/blob/4fb3e8fb12b24c9d469ca88bee83e764c90bda8b/train_qwen/train_qwen2_sft.py#L258-L263)
 ```python
             if grad_norm is not None:
                 logs["grad_norm"] = (
