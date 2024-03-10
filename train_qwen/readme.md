@@ -72,6 +72,12 @@ for index, chunk_s in tqdm(enumerate(chunk_s_list), total=len(chunk_s_list)):
 ## 修改的目的
 主要是在transformers的Trainer的这个部分代码，出现问题[https://github.com/huggingface/transformers/blob/efdd436663436e78d8ad3213d11325d86578db95/src/transformers/trainer.py#L2401](https://github.com/huggingface/transformers/blob/efdd436663436e78d8ad3213d11325d86578db95/src/transformers/trainer.py#L2401)
 
+报错如下：
+
+```bash
+TypeError: Object of type Tensor is not JSON serializable trainer
+
+```
 #### 原始代码
 
 ```python
