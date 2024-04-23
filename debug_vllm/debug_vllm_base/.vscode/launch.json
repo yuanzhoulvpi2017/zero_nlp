@@ -1,0 +1,53 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "offline",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "openai api",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                "--served-model-name",
+                "Qwen1.5-7B-Chat",
+                "--model",
+                "/home/yuanz/documents/train_qwen/model/Qwen1.5-1.8B-Chat",
+                "--tensor-parallel-size",
+                "1",
+                "--port",
+                "8001"
+            ],
+            "justMyCode": false,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0",
+            }
+        },
+        {
+            "name": "Python module",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "vllm.entrypoints.openai.api_server",
+            "args": [
+                "--served-model-name",
+                "Qwen1.5-7B-Chat",
+                "--model",
+                "/home/yuanz/documents/train_qwen/model/Qwen1.5-1.8B-Chat",
+                "--tensor-parallel-size",
+                "2",
+                "--port",
+                "8001"
+            ]
+        }
+    ]
+}
