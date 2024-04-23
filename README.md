@@ -69,7 +69,9 @@
 | internlm-base sft                 | [internlm-sft ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/internlm-sft)                                  | ✅  | ✅    | ✅   | ❌  | ❌  |
 | train qwen2                       | [train_qwen2 ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/train_qwen)                                     | ✅  | ✅    | ✅   | ✅    | ❌  |
 
-### debug vllm
+
+
+### 工程介绍 debug vllm
 
 1. 介绍如何debug vllm，对vllm工程上了解的更加透彻 [debug vllm](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/debug_vllm)
 
@@ -103,8 +105,10 @@
 # 分享transformers源码解读
 一直在做transformers的源码解读，可以去B站查看视频👉[良睦路程序员](https://space.bilibili.com/45156039)
 
-# 分享数据
+[//]: # (# 分享数据)
 
-一直在整理开源数据，如果有需要，可以关注公众号`统计学人`，回复`nlp数据`即可。目前还在整理数据中
+[//]: # ()
+[//]: # (一直在整理开源数据，如果有需要，可以关注公众号`统计学人`，回复`nlp数据`即可。目前还在整理数据中)
 
-![统计学人](images/gzh.jpg)
+[//]: # ()
+[//]: # (![统计学人]&#40;images/gzh.jpg&#41;)
