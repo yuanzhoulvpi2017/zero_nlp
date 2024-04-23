@@ -68,6 +68,12 @@
 | 训练时候，数据占比发生变化                     | [train_data_sample ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/train_data_sample)                        | ✅  | ✅    | ✅   | ❌  | ❌  |
 | internlm-base sft                 | [internlm-sft ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/internlm-sft)                                  | ✅  | ✅    | ✅   | ❌  | ❌  |
 | train qwen2                       | [train_qwen2 ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/train_qwen)                                     | ✅  | ✅    | ✅   | ✅    | ❌  |
+
+### debug vllm
+
+1. 介绍如何debug vllm，对vllm工程上了解的更加透彻 [debug vllm](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/debug_vllm)
+
+
 <details><summary><b>数据流程图解</b></summary>
 
 
