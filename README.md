@@ -68,7 +68,7 @@
 | 训练时候，数据占比发生变化                     | [train_data_sample ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/train_data_sample)                        | ✅  | ✅    | ✅   | ❌  | ❌  |
 | internlm-base sft                 | [internlm-sft ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/internlm-sft)                                  | ✅  | ✅    | ✅   | ❌  | ❌  |
 | train qwen2                       | [train_qwen2 ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/train_qwen)                                     | ✅  | ✅    | ✅   | ✅    | ❌  |
-
+| train llava                       | [train_llava ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/train_llava)                                     | ✅  | ✅    | ✅   | ✅    | ❌  |
 
 
 ### 工程介绍 debug vllm
