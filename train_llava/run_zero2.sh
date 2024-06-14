@@ -3,10 +3,10 @@
 deepspeed --include localhost:1,2,3 run.py \
     --deepspeed ds_zero2_no_offload.json \
     --model_name_or_path test_model/model001 \
-    --use_lora true \
+    --train_type use_lora \
     --data_path data/liuhaotian/LLaVA-CC3M-Pretrain-595K \
-    --bf16 false \
-    --fp16 true \
+    --bf16 true \
+    --fp16 false \
     --output_dir output_test_model \
     --num_train_epochs 3 \
     --per_device_train_batch_size 2 \
