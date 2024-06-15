@@ -131,7 +131,7 @@ class TrainLLavaModelCollator:
                     [
                         torch.full(
                             (1, max_input_len - max_input_len_list[index]),
-                            self.processor.tokenizer.eos_token_id,
+                            self.processor.tokenizer.pad_token_id,
                         ),
                         value,
                     ],
@@ -158,7 +158,7 @@ class TrainLLavaModelCollator:
         final_pixel_values = torch.concat(pixel_values, axis=0)
         attention_mask = torch.ones_like(final_input_ids)
         attention_mask[final_input_ids ==
-                       self.processor.tokenizer.eos_token_id] = 0
+                       self.processor.tokenizer.pad_token_id] = 0
         return {
             "input_ids": final_input_ids,
             "labels": final_labels,
