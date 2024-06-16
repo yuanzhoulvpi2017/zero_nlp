@@ -19,7 +19,9 @@ from transformers import (
     TrainingArguments,
 )
 
+from train_llava.custom_trainer import WebTrainer
 from train_llava.data import LlavaDataset, TrainLLavaModelCollator
+from train_llava.data_websend import DatasetReceiveByWeb, TrainLlavaModelCollatorByWeb
 from train_llava.util import print_trainable_parameters
 
 logger = logging.getLogger(__name__)
@@ -33,6 +35,7 @@ logger = logging.getLogger(__name__)
 #     debugpy.wait_for_client()
 # except Exception as e:
 #     pass
+
 
 @dataclass
 class ModelArguments:
@@ -51,9 +54,13 @@ class ModelArguments:
 
 @dataclass
 class DataArguments:
+    build_data_from_web: bool = field(
+        default=False, metadata={"help": "是否使用web获得数据"}
+    )
     data_path: str = field(
         default=None, metadata={"help": "Path to the training data."}
     )
+    web_host_ip: str = field(default="0.0.0.0", metadata={"help": "web端的数据ip"})
     # source_length: int = field(default=128)
     # target_length: int = field(default=512)
 
@@ -102,11 +109,24 @@ def load_model_processor(modelargs: ModelArguments):
     return model, processor
 
 
-def load_dataset(dataargs: DataArguments):
-    llava_dataset = LlavaDataset(
-        dataargs.data_path  # "data/liuhaotian/LLaVA-CC3M-Pretrain-595K"
-    )
-    return llava_dataset
+def load_dataset_collator(processor, dataargs: DataArguments):
+    if dataargs.build_data_from_web:
+        llava_dataset = DatasetReceiveByWeb(
+            dataargs.web_host_ip,
+        )
+        logging.warning("从网络层进行数据初始化")
+
+        if len(llava_dataset) <= 0:
+            raise ValueError("数据出现问题，无法进行web数据初始化")
+        data_collator = TrainLlavaModelCollatorByWeb(processor, -100)
+    else:
+
+        llava_dataset = LlavaDataset(
+            dataargs.data_path  # "data/liuhaotian/LLaVA-CC3M-Pretrain-595K"
+        )
+        data_collator = TrainLLavaModelCollator(processor, -100)
+
+    return llava_dataset, data_collator
 
 
 def train():
@@ -115,16 +135,26 @@ def train():
     )
     model_args, data_args, training_args = parser.parse_args_into_dataclasses()
     model, processor = load_model_processor(model_args)
-    data_collator = TrainLLavaModelCollator(processor, -100)
-    train_dataset = load_dataset(data_args)
+    train_dataset, data_collator = load_dataset_collator(processor, data_args)
 
-    trainer = Trainer(
-        model=model,
-        args=training_args,
-        train_dataset=train_dataset,
-        eval_dataset=None,
-        data_collator=data_collator,
-    )
+    if data_args.build_data_from_web:
+        trainer = WebTrainer(
+            model=model,
+            args=training_args,
+            train_dataset=train_dataset,
+            eval_dataset=None,
+            data_collator=data_collator,
+        )
+    else:
+
+        trainer = Trainer(
+            model=model,
+            args=training_args,
+            train_dataset=train_dataset,
+            eval_dataset=None,
+            data_collator=data_collator,
+        )
+
     trainer.train()
     trainer.save_state()
     trainer.save_model(output_dir=training_args.output_dir)

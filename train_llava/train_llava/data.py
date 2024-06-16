@@ -157,8 +157,7 @@ class TrainLLavaModelCollator:
         )
         final_pixel_values = torch.concat(pixel_values, axis=0)
         attention_mask = torch.ones_like(final_input_ids)
-        attention_mask[final_input_ids ==
-                       self.processor.tokenizer.pad_token_id] = 0
+        attention_mask[final_input_ids == self.processor.tokenizer.pad_token_id] = 0
         return {
             "input_ids": final_input_ids,
             "labels": final_labels,
@@ -167,14 +166,9 @@ class TrainLLavaModelCollator:
         }
 
 
-
-
 if __name__ == "__main__":
     data_dir = "/home/yuanz/documents/datasets/liuhaotian/LLaVA-CC3M-Pretrain-595K"
 
     llavadataset = LlavaDataset(data_dir)
     print(len(llavadataset))
     print(llavadataset[100])
-    
-    
-    
