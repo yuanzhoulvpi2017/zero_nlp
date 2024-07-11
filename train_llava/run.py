@@ -21,7 +21,7 @@ from transformers import (
 
 from train_llava.custom_trainer import WebTrainer
 from train_llava.data import LlavaDataset, TrainLLavaModelCollator
-from train_llava.data_websend import DatasetReceiveByWeb, TrainLlavaModelCollatorByWeb
+# from train_llava.data_websend import DatasetReceiveByWeb, TrainLlavaModelCollatorByWeb
 from train_llava.util import print_trainable_parameters
 
 logger = logging.getLogger(__name__)
@@ -54,13 +54,9 @@ class ModelArguments:
 
 @dataclass
 class DataArguments:
-    build_data_from_web: bool = field(
-        default=False, metadata={"help": "是否使用web获得数据"}
-    )
     data_path: str = field(
         default=None, metadata={"help": "Path to the training data."}
     )
-    web_host_ip: str = field(default="0.0.0.0", metadata={"help": "web端的数据ip"})
     # source_length: int = field(default=128)
     # target_length: int = field(default=512)
 
@@ -110,21 +106,11 @@ def load_model_processor(modelargs: ModelArguments):
 
 
 def load_dataset_collator(processor, dataargs: DataArguments):
-    if dataargs.build_data_from_web:
-        llava_dataset = DatasetReceiveByWeb(
-            dataargs.web_host_ip,
-        )
-        logging.warning("从网络层进行数据初始化")
 
-        if len(llava_dataset) <= 0:
-            raise ValueError("数据出现问题，无法进行web数据初始化")
-        data_collator = TrainLlavaModelCollatorByWeb(processor, -100)
-    else:
-
-        llava_dataset = LlavaDataset(
-            dataargs.data_path  # "data/liuhaotian/LLaVA-CC3M-Pretrain-595K"
-        )
-        data_collator = TrainLLavaModelCollator(processor, -100)
+    llava_dataset = LlavaDataset(
+        dataargs.data_path  # "data/liuhaotian/LLaVA-CC3M-Pretrain-595K"
+    )
+    data_collator = TrainLLavaModelCollator(processor, -100)
 
     return llava_dataset, data_collator
 
