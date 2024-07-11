@@ -16,5 +16,11 @@
 | 推理            | 训练的模型，如何进行推理                                              | 1. lora版本： [code05_infer_lora.ipynb](https://github.com/yuanzhoulvpi2017/zero_nlp/blob/main/train_llava/code05_infer_lora.ipynb) <br/>2. 全量参数版本:[train_llava/code05_infer.ipynb](https://github.com/yuanzhoulvpi2017/zero_nlp/blob/main/train_llava/code05_infer.ipynb) |                                                                                                                       |
 
 
+## 下载模型
+1. hf的链接为：[https://huggingface.co/yuanzhoulvpi/llava_qwen15-4b-chat_openai-clip-vit-large-patch14-336](https://huggingface.co/yuanzhoulvpi/llava_qwen15-4b-chat_openai-clip-vit-large-patch14-336)
 
 
+## 训练策略
+
+1. 训练的时候，使用lora方式进行训练最好。在`run_zero2.sh`里面设置`--train_type use_lora`即可。
+2. 全量参数训练，效果非常差。
