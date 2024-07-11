@@ -123,23 +123,13 @@ def train():
     model, processor = load_model_processor(model_args)
     train_dataset, data_collator = load_dataset_collator(processor, data_args)
 
-    if data_args.build_data_from_web:
-        trainer = WebTrainer(
-            model=model,
-            args=training_args,
-            train_dataset=train_dataset,
-            eval_dataset=None,
-            data_collator=data_collator,
-        )
-    else:
-
-        trainer = Trainer(
-            model=model,
-            args=training_args,
-            train_dataset=train_dataset,
-            eval_dataset=None,
-            data_collator=data_collator,
-        )
+    trainer = Trainer(
+        model=model,
+        args=training_args,
+        train_dataset=train_dataset,
+        eval_dataset=None,
+        data_collator=data_collator,
+    )
 
     trainer.train()
     trainer.save_state()

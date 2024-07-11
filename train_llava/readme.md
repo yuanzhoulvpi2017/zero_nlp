@@ -17,9 +17,7 @@
 
 ## 下载模型
 
-1.
-
-hf的链接为：[llava_qwen15-4b-chat_openai-clip-vit-large-patch14-336](https://huggingface.co/yuanzhoulvpi/llava_qwen15-4b-chat_openai-clip-vit-large-patch14-336)
+1.hf的链接为：[llava_qwen15-4b-chat_openai-clip-vit-large-patch14-336](https://huggingface.co/yuanzhoulvpi/llava_qwen15-4b-chat_openai-clip-vit-large-patch14-336)
 
 ## 训练策略
 
