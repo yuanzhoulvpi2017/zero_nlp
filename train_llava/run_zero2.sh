@@ -11,7 +11,7 @@ deepspeed --include localhost:4,5,6,7 run.py \
     --dataloader_pin_memory True \
     --dataloader_num_workers 10 \
     --dataloader_persistent_workers True \
-    --output_dir output_model_freeze_vison_0705 \
+    --output_dir output_model_user_lora_0705 \
     --num_train_epochs 10 \
     --per_device_train_batch_size 4 \
     --per_device_eval_batch_size 1 \
