@@ -48,33 +48,32 @@
 ### 模型训练
 
 | 中文名称                              | 文件夹名称                                                                                                                 | 数据 | 数据清洗 | 大模型 | 模型部署 | 图解 |
-|-----------------------------------|-----------------------------------------------------------------------------------------------------------------------|----|------|-----|----|----|
-| 中文文本分类                            | [chinese_classifier](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_classifier)                       | ✅  | ✅    | ✅   | ❌  | ✅  |
-| 中文`gpt2`                          | [chinese_gpt2](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_gpt2)                                   | ✅  | ✅    | ✅   | ✅  | ❌  |
-| 中文`clip`                          | [chinese_clip](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip)                                   | ✅  | ✅    | ✅   | ❌  | ✅  |
-| 图像生成中文文本                          | [VisionEncoderDecoderModel](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit-gpt2-image-chinese-captioning) | ✅  | ✅    | ✅   | ❌  | ✅  |
-| vit核心源码介绍                         | [vit model](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit)                                               | ❌  | ❌    | ❌   | ❌  | ✅  |
-| `Thu-ChatGlm-6b`(`v1`版本 作废)       | [simple_thu_chatglm6b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b)                   | ✅  | ✅    | ✅   | ✅  | ❌  |
-| 🌟chatglm-`v2`-6b🎉               | [chatglm_v2_6b_lora](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)                       | ✅  | ✅    | ✅   | ❌  | ❌  |
-| 中文`dolly_v2_3b`                   | [dolly_v2_3b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_dolly_v2_3b)                             | ✅  | ✅    | ✅   | ❌  | ❌  |
-| 中文`llama`(作废)                     | [chinese_llama](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_llama)                                 | ✅  | ✅    | ✅   | ❌  | ❌  |
-| 中文`bloom`                         | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅  | ✅    | ✅   | ❌  | ❌  |
-| 中文`falcon`(注意：falcon模型和bloom结构类似) | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅  | ✅    | ✅   | ❌  | ❌  |
-| 中文**预训练**代码                       | [model_clm](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_clm)                                         | ✅  | ✅    | ✅   | ❌  | ❌  |
-| 百川大模型                             | [model_baichuan](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_baichuan)                               | ✅  | ✅    | ✅   | ✅  | ❌  |
-| 模型修剪✂️                            | [model_modify](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_modify)                                   | ✅  | ✅    | ✅   |    |    |
-| llama2 流水线并行                      | [pipeline](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/pipeline)                                           | ✅  | ✅    | ✅   | ❌  | ❌  |
-| 百川2-7b-chat的`dpo`                 | [DPO baichuan2-7b-chat ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/baichuan2_dpo)                        | ✅  | ✅    | ✅   | ❌  | ❌  |
-| 训练时候，数据占比发生变化                     | [train_data_sample ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/train_data_sample)                        | ✅  | ✅    | ✅   | ❌  | ❌  |
-| internlm-base sft                 | [internlm-sft ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/internlm-sft)                                  | ✅  | ✅    | ✅   | ❌  | ❌  |
+|-----------------------------------|-----------------------------------------------------------------------------------------------------------------------|----|------|-----|------|----|
+| 中文文本分类                            | [chinese_classifier](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_classifier)                       | ✅  | ✅    | ✅   | ❌    | ✅  |
+| 中文`gpt2`                          | [chinese_gpt2](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_gpt2)                                   | ✅  | ✅    | ✅   | ✅    | ❌  |
+| 中文`clip`                          | [chinese_clip](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip)                                   | ✅  | ✅    | ✅   | ❌    | ✅  |
+| 图像生成中文文本                          | [VisionEncoderDecoderModel](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit-gpt2-image-chinese-captioning) | ✅  | ✅    | ✅   | ❌    | ✅  |
+| vit核心源码介绍                         | [vit model](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit)                                               | ❌  | ❌    | ❌   | ❌    | ✅  |
+| `Thu-ChatGlm-6b`(`v1`版本 作废)       | [simple_thu_chatglm6b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b)                   | ✅  | ✅    | ✅   | ✅    | ❌  |
+| 🌟chatglm-`v2`-6b🎉               | [chatglm_v2_6b_lora](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chatglm_v2_6b_lora)                       | ✅  | ✅    | ✅   | ❌    | ❌  |
+| 中文`dolly_v2_3b`                   | [dolly_v2_3b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_dolly_v2_3b)                             | ✅  | ✅    | ✅   | ❌    | ❌  |
+| 中文`llama`(作废)                     | [chinese_llama](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_llama)                                 | ✅  | ✅    | ✅   | ❌    | ❌  |
+| 中文`bloom`                         | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅  | ✅    | ✅   | ❌    | ❌  |
+| 中文`falcon`(注意：falcon模型和bloom结构类似) | [chinese_bloom](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_bloom)                                 | ✅  | ✅    | ✅   | ❌    | ❌  |
+| 中文**预训练**代码                       | [model_clm](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_clm)                                         | ✅  | ✅    | ✅   | ❌    | ❌  |
+| 百川大模型                             | [model_baichuan](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_baichuan)                               | ✅  | ✅    | ✅   | ✅    | ❌  |
+| 模型修剪✂️                            | [model_modify](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/model_modify)                                   | ✅  | ✅    | ✅   |      |    |
+| llama2 流水线并行                      | [pipeline](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/pipeline)                                           | ✅  | ✅    | ✅   | ❌    | ❌  |
+| 百川2-7b-chat的`dpo`                 | [DPO baichuan2-7b-chat ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/baichuan2_dpo)                        | ✅  | ✅    | ✅   | ❌    | ❌  |
+| 训练时候，数据占比发生变化                     | [train_data_sample ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/train_data_sample)                        | ✅  | ✅    | ✅   | ❌    | ❌  |
+| internlm-base sft                 | [internlm-sft ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/internlm-sft)                                  | ✅  | ✅    | ✅   | ❌    | ❌  |
 | train qwen2                       | [train_qwen2 ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/train_qwen)                                     | ✅  | ✅    | ✅   | ✅    | ❌  |
-| train llava                       | [train_llava ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/train_llava)                                     | ✅  | ✅    | ✅   | ✅    | ❌  |
-
+| train llava                       | [train_llava ](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/train_llava)                                    | ✅  | ✅    | ✅   | ✅    | ✅  |
 
 ### 工程介绍 debug vllm
 
-1. 介绍如何debug vllm，对vllm工程上了解的更加透彻 [debug vllm](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/debug_vllm)
-
+1. 介绍如何debug
+   vllm，对vllm工程上了解的更加透彻 [debug vllm](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/debug_vllm)
 
 <details><summary><b>数据流程图解</b></summary>
 
@@ -103,12 +102,15 @@
 </details>
 
 # 分享transformers源码解读
+
 一直在做transformers的源码解读，可以去B站查看视频👉[良睦路程序员](https://space.bilibili.com/45156039)
 
 [//]: # (# 分享数据)
 
 [//]: # ()
+
 [//]: # (一直在整理开源数据，如果有需要，可以关注公众号`统计学人`，回复`nlp数据`即可。目前还在整理数据中)
 
 [//]: # ()
+
 [//]: # (![统计学人]&#40;images/gzh.jpg&#41;)
