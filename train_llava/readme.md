@@ -53,8 +53,8 @@
 
 ## 多模态数据
 
-| 数据名称                     | 下载链接                                                                                                                                       | 数据质量                  |
-|--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|-----------------------|
-| TextOCR-GPT4o            | [https://huggingface.co/datasets/CaptionEmporium/TextOCR-GPT4o](https://huggingface.co/datasets/CaptionEmporium/TextOCR-GPT4o)             | 非常高👍                 |
-| LLaVA-CC3M-Pretrain-595K | [https://huggingface.co/datasets/liuhaotian/LLaVA-CC3M-Pretrain-595K](https://huggingface.co/datasets/liuhaotian/LLaVA-CC3M-Pretrain-595K) | 质量一般，但是具有代表性，可以用来做预训练 |
-| ShareGPT-4o              | [https://huggingface.co/datasets/OpenGVLab/ShareGPT-4o](https://huggingface.co/datasets/OpenGVLab/ShareGPT-4o)                             | 非常推荐👍                |
+| 数据名称                     | 下载链接                                                                                                                                       | 数据质量                  | 数据量   |
+|--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|-----------------------|-------|
+| TextOCR-GPT4o            | [https://huggingface.co/datasets/CaptionEmporium/TextOCR-GPT4o](https://huggingface.co/datasets/CaptionEmporium/TextOCR-GPT4o)             | 非常高👍                 | 2万条左右 |
+| LLaVA-CC3M-Pretrain-595K | [https://huggingface.co/datasets/liuhaotian/LLaVA-CC3M-Pretrain-595K](https://huggingface.co/datasets/liuhaotian/LLaVA-CC3M-Pretrain-595K) | 质量一般，但是具有代表性，可以用来做预训练 | 59万左右 |
+| ShareGPT-4o              | [https://huggingface.co/datasets/OpenGVLab/ShareGPT-4o](https://huggingface.co/datasets/OpenGVLab/ShareGPT-4o)                             | 非常推荐👍                |       |
