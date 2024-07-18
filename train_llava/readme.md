@@ -19,7 +19,12 @@
 
 | 数据   | 语言模型            | 下载🔗                                                                                                                                                              |
 |------|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 英文数据 | qwen1.5-4b-chat | [yuanzhoulvpi/llava_qwen15-4b-chat_openai-clip-vit-large-patch14-336](https://huggingface.co/yuanzhoulvpi/llava_qwen15-4b-chat_openai-clip-vit-large-patch14-336) |
+| 英文数据 | qwen1.5-4b-chat | [yuanzhoulvpi/llava_qwen15-4b-chat_openai-clip-vit-large-patch14-336-V2](https://huggingface.co/yuanzhoulvpi/llava_qwen15-4b-chat_openai-clip-vit-large-patch14-336-V2) |
+
+
+
+
+
 
 ## 训练策略
 
