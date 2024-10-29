@@ -129,27 +129,39 @@ def make_train_dataset(
     def generate_sources_targets(
         examples: Dict, tokenizer: transformers.PreTrainedTokenizer
     ):
-        ins_data = examples["instruction"]
+        ins = examples["instruction"]
         output = examples["output"]
 
-        prompt = f"患者描述的内容：\n\n\n {ins_data}"
-        messages = [
-            {
-                "role": "system",
-                "content": "你是一个非常厉害的医生，精通各种医术，现在有患者开始向你描述他的情况，请帮帮他",
-            },
-            {"role": "user", "content": prompt},
-            {"role": "assistant", "content": output},
-        ]
-        token_id_list = tokenizer.apply_chat_template(messages)
-        sub_sequence = [77091, 198]
-        last_gen_id = find_subsequence(token_id_list, sub_sequence)[-1] + 2
+        len_ = len(ins)
 
-        input_ids = token_id_list.copy()
+        def build_message2ids(ins_data, output):
+            prompt = f"患者描述的内容：\n\n\n {ins_data}"
+            messages = [
+                {
+                    "role": "system",
+                    "content": "你是一个非常厉害的医生，精通各种医术，现在有患者开始向你描述他的情况，请帮帮他",
+                },
+                {"role": "user", "content": prompt},
+                {"role": "assistant", "content": output},
+            ]
+            token_id_list = tokenizer.apply_chat_template(messages)
+            sub_sequence = [77091, 198]
+            last_gen_id = find_subsequence(token_id_list, sub_sequence)[-1] + 2
 
-        labels = [-100] * last_gen_id + token_id_list[
-            (last_gen_id - len(token_id_list)) :
-        ]
+            input_ids = token_id_list.copy()
+
+            labels = [-100] * last_gen_id + token_id_list[
+                (last_gen_id - len(token_id_list)) :
+            ]
+            return input_ids, labels
+
+        input_ids = []
+        labels = []
+
+        for i in range(len_):
+            temp_input_ids, temp_labels = build_message2ids(ins[i], output[i])
+            input_ids.append(temp_input_ids)
+            labels.append(temp_labels)
 
         examples["input_ids"] = input_ids
         examples["labels"] = labels
@@ -159,7 +171,7 @@ def make_train_dataset(
 
     dataset = dataset.map(
         function=generate_sources_targets_p,
-        batched=False,
+        batched=True,
         desc="Running tokenizer on train dataset",
         num_proc=4,
     ).shuffle()
