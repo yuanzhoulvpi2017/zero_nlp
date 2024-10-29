@@ -106,36 +106,12 @@ def _tokenize_fn(
     )
 
 
-def preprocess(
-    sources: Sequence[str],
-    targets: Sequence[str],
-    tokenizer: transformers.PreTrainedTokenizer,
-) -> Dict:
-    """Preprocess the data by tokenizing."""
-    examples = [s + t for s, t in zip(sources, targets)]
-    examples_tokenized, sources_tokenized = [
-        _tokenize_fn(strings, tokenizer) for strings in (examples, sources)
-    ]
-    input_ids = examples_tokenized["input_ids"]
-    labels = copy.deepcopy(input_ids)
-    for label, source_len in zip(labels, sources_tokenized["input_ids_lens"]):
-        label[:source_len] = IGNORE_INDEX
-    return dict(input_ids=input_ids, labels=labels)
-
-
-def build_source_text(x: str, tokenizer) -> str:
-    prompt = f"患者描述的内容：\n\n\n {x}"
-    messages = [
-        {
-            "role": "system",
-            "content": "你是一个非常厉害的医生，精通各种医术，现在有患者开始向你描述他的情况，请帮帮他",
-        },
-        {"role": "user", "content": prompt},
-    ]
-    text = tokenizer.apply_chat_template(
-        messages, tokenize=False, add_generation_prompt=True
-    )
-    return text
+def find_subsequence(main_seq: List[int], sub_seq: List[int]) -> List[int]:
+    positions = []
+    for i in range(len(main_seq) - len(sub_seq) + 1):
+        if main_seq[i : i + len(sub_seq)] == sub_seq:
+            positions.append(i)
+    return positions
 
 
 def make_train_dataset(
@@ -156,30 +132,36 @@ def make_train_dataset(
         ins_data = examples["instruction"]
         output = examples["output"]
 
-        len_ = len(ins_data)
-
-        sources = [
-            build_source_text(ins_data[i][: data_args.source_length], tokenizer)
-            for i in range(len_)
+        prompt = f"患者描述的内容：\n\n\n {ins_data}"
+        messages = [
+            {
+                "role": "system",
+                "content": "你是一个非常厉害的医生，精通各种医术，现在有患者开始向你描述他的情况，请帮帮他",
+            },
+            {"role": "user", "content": prompt},
+            {"role": "assistant", "content": output},
         ]
-        # sources = [i[: data_args.source_length] for i in sources]
-        targets = [
-            f"{example[:data_args.target_length-1]}{tokenizer.eos_token}"
-            for example in output
+        token_id_list = tokenizer.apply_chat_template(messages)
+        sub_sequence = [77091, 198]
+        last_gen_id = find_subsequence(token_id_list, sub_sequence)[-1] + 2
+
+        input_ids = token_id_list.copy()
+
+        labels = [-100] * last_gen_id + token_id_list[
+            (last_gen_id - len(token_id_list)) :
         ]
 
-        input_output = preprocess(sources=sources, targets=targets, tokenizer=tokenizer)
-        examples["input_ids"] = input_output["input_ids"]
-        examples["labels"] = input_output["labels"]
+        examples["input_ids"] = input_ids
+        examples["labels"] = labels
         return examples
 
     generate_sources_targets_p = partial(generate_sources_targets, tokenizer=tokenizer)
 
     dataset = dataset.map(
         function=generate_sources_targets_p,
-        batched=True,
+        batched=False,
         desc="Running tokenizer on train dataset",
-        num_proc=40,
+        num_proc=4,
     ).shuffle()
     return dataset
 
