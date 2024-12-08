@@ -1,3 +1,7 @@
+
+🔊🔥：这个项目已经作废，移步到隔壁文件夹📁：[https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip_ddp](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip_ddp)
+
+
 # 介绍
 
 1. 本文将介绍，如何从0到1的训练一个中文clip模型。
