@@ -51,7 +51,7 @@
 |-----------------------------------|-----------------------------------------------------------------------------------------------------------------------|----|------|-----|------|----|
 | 中文文本分类                            | [chinese_classifier](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_classifier)                       | ✅  | ✅    | ✅   | ❌    | ✅  |
 | 中文`gpt2`                          | [chinese_gpt2](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_gpt2)                                   | ✅  | ✅    | ✅   | ✅    | ❌  |
-| 中文`clip`                          | [chinese_clip](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip)                                   | ✅  | ✅    | ✅   | ❌    | ✅  |
+| 中文`clip`                          | [chinese_clip](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/chinese_clip_ddp)                               | ✅  | ✅    | ✅   | ❌    | ✅  |
 | 图像生成中文文本                          | [VisionEncoderDecoderModel](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit-gpt2-image-chinese-captioning) | ✅  | ✅    | ✅   | ❌    | ✅  |
 | vit核心源码介绍                         | [vit model](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/vit)                                               | ❌  | ❌    | ❌   | ❌    | ✅  |
 | `Thu-ChatGlm-6b`(`v1`版本 作废)       | [simple_thu_chatglm6b](https://github.com/yuanzhoulvpi2017/zero_nlp/tree/main/simple_thu_chatglm6b)                   | ✅  | ✅    | ✅   | ✅    | ❌  |

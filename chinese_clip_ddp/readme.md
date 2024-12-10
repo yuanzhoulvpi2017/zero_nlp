@@ -29,3 +29,8 @@
 
 
 
+### 参考链接
+1. clip训练方法参考这个项目[transformers/contrastive-image-text](https://github.com/huggingface/transformers/tree/66ab300aaff9ef509f8736cf186ab9b6a0ef4f3b/examples/pytorch/contrastive-image-text)
+2. 跨卡通信的实现方式参考pytorch文档、chatgpt、claude等
+
+
