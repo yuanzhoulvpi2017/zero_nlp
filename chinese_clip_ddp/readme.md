@@ -12,6 +12,8 @@
 1. 直接查看代码：https://github.com/yuanzhoulvpi2017/zero_nlp/blob/main/chinese_clip_ddp/embedding/vit4embedding.py
 
 
+## 基于mivlus和streamlit做图文检索的看板搭建
+1. 直接查看代码:`code06_infer.ipynb`、`webul_search.py`
 
 ## 不同的跨卡通讯方式，效果不一样的。有的是报错、有的是loss不下降
 
