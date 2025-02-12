@@ -13,3 +13,7 @@
 4. 运行对应的sh文件，下载模型和数据: `sh dl_model.sh`；`sh dl_dataset.sh`
 
 5. 然后使用vscode进行调试
+
+
+## 更多
+1. 已经上传grpo_trainer.drawio流程图，打开方式可以从这个网站下载软件[https://www.drawio.com](https://www.drawio.com)
