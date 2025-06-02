@@ -21,7 +21,7 @@ class BaiduSearch:
 
         # 找到搜索框，输入关键词
         search_box = self.driver.find_element(By.ID, "kw")
-        search_box.send_keys("尼康z63")
+        search_box.send_keys(self.query)
         search_box.send_keys(Keys.RETURN)
 
         # 等待几秒钟以便查看结果
